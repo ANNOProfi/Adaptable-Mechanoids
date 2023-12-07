@@ -4,21 +4,32 @@
     <HediffDef>
         <defName>AM_AdaptationMatrix</defName>
         <label>adaptation matrix</label>
+        <description>bla</description>
         <hediffClass>HediffWithComps</hediffClass>
+        <comps>
+            <li Class="AdaptableMechanoids.AM_HediffCompProperties_OffsetOtherHediff">
+                <affectedHediffs>
+                    <li>AM_AdaptiveArmor</li>
+                </affectedHediffs>
+            </li>
+            <li>
+                <compClass>AdaptableMechanoids.AM_HediffComp_HediffDamage</compClass>
+            </li>
+        </comps>
     </HediffDef>
 
     <HediffDef>
-        <defName>AM_AdaptiveArmor_Blunt</defName>
-        <label>adaptive armor blunt</label>
+        <defName>AM_AdaptiveArmor</defName>
+        <label>adaptive armor</label>
+        <description>bla</description>
         <isBad>false</isBad>
         <stages>
             <li>
                 <statOffsets>
-                    <Armor_Rating_Blunt>1</Armor_Rating_Blunt>
+                    <ArmorRating_Blunt>+0</ArmorRating_Blunt>
+                    <ArmorRating_Sharp>+0</ArmorRating_Sharp>
+                    <ArmorRating_Heat>+0</ArmorRating_Heat>
                 </statOffsets>
-                <statFactors>
-                    <ArmorRating_Blunt>1</ArmorRating_Blunt>
-                </statFactors>
             </li>
         </stages>
     </HediffDef>

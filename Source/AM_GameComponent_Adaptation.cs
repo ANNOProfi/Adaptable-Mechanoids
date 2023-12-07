@@ -12,7 +12,7 @@ namespace AdaptableMechanoids
 
         private float armor_Heat;
 
-        public Dictionary<string, AM_MechArmorStats> mechList;
+        public Dictionary<string, AM_MechArmorStats> mechList = new Dictionary<string, AM_MechArmorStats>();
 
         public AM_GameComponent_Adaptation(Game game)
         {
@@ -22,7 +22,7 @@ namespace AdaptableMechanoids
         {
             base.StartedNewGame();
 
-            
+            Log.Message("Adaptation GameComp loaded");
         }
     }
 }

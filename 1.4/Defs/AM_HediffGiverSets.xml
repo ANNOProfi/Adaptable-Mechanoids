@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <HediffGiverSetDef>
+        <defName>AM_MechAdaptationHediffGiver</defName>
+        <hediffGivers>
+            <li Class="HediffGiver_Birthday">
+                <hediff>AM_AdaptiveArmor</hediff>
+                <!--<partsToAffect>
+                    <li>Body</li>
+                </partsToAffect>-->
+                <ageFractionChanceCurve>
+                    <points>
+                        <li>(0, 1)</li>
+                        <li>(1, 1)</li>
+                    </points>
+                </ageFractionChanceCurve>
+                <averageSeverityPerDayBeforeGeneration>1</averageSeverityPerDayBeforeGeneration>
+            </li>
+            <li Class="HediffGiver_Birthday">
+                <hediff>AM_AdaptationMatrix</hediff>
+                <!--<partsToAffect>
+                    <li>Body</li>
+                </partsToAffect>-->
+                <ageFractionChanceCurve>
+                    <points>
+                        <li>(0, 1)</li>
+                        <li>(1, 1)</li>
+                    </points>
+                </ageFractionChanceCurve>
+                <averageSeverityPerDayBeforeGeneration>1</averageSeverityPerDayBeforeGeneration>
+            </li>
+            
+        </hediffGivers>
+    </HediffGiverSetDef>
+</Defs>
