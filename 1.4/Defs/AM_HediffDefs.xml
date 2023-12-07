@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Defs>
+    <HediffDef>
+        <defName>AM_AdaptationMatrix</defName>
+        <label>adaptation matrix</label>
+        <hediffClass>HediffWithComps</hediffClass>
+    </HediffDef>
+
+    <HediffDef>
+        <defName>AM_AdaptiveArmor_Blunt</defName>
+        <label>adaptive armor blunt</label>
+        <isBad>false</isBad>
+        <stages>
+            <li>
+                <statOffsets>
+                    <Armor_Rating_Blunt>1</Armor_Rating_Blunt>
+                </statOffsets>
+                <statFactors>
+                    <ArmorRating_Blunt>1</ArmorRating_Blunt>
+                </statFactors>
+            </li>
+        </stages>
+    </HediffDef>
+</Defs>
