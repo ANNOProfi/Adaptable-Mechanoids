@@ -16,19 +16,7 @@
                 </ageFractionChanceCurve>
                 <averageSeverityPerDayBeforeGeneration>1</averageSeverityPerDayBeforeGeneration>
             </li>
-            <li Class="HediffGiver_Birthday">
-                <hediff>AM_AdaptationMatrix</hediff>
-                <!--<partsToAffect>
-                    <li>Body</li>
-                </partsToAffect>-->
-                <ageFractionChanceCurve>
-                    <points>
-                        <li>(0, 1)</li>
-                        <li>(1, 1)</li>
-                    </points>
-                </ageFractionChanceCurve>
-                <averageSeverityPerDayBeforeGeneration>1</averageSeverityPerDayBeforeGeneration>
-            </li>
+            
             
         </hediffGivers>
     </HediffGiverSetDef>

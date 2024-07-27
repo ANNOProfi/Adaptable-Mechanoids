@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Defs>
+    <HediffDef>
+        <defName>AM_AdaptiveArmor</defName>
+        <label>adapted armor</label>
+        <description>Mechanoid armor, that has been adapted to better protect against a specific threat.</description>
+        <isBad>false</isBad>
+        <hediffClass>AdaptableMechanoids.AM_Hediff_AdaptiveArmor</hediffClass>
+        <stages>
+        </stages>
+    </HediffDef>
+</Defs>
