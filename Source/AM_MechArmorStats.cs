@@ -57,14 +57,14 @@ namespace AdaptableMechanoids
 
         private bool usingHeat = false;
 
-        public AM_MechArmorStats(float blunt, float sharp, float heat, string name)
+        public AM_MechArmorStats(Pawn pawn)
         {
             armorTypes.Add(AM_DefOf.Blunt);
             armorTypes.Add(DamageArmorCategoryDefOf.Sharp);
 
-            armorValues.Add(AM_DefOf.Blunt, blunt);
-            armorValues.Add(DamageArmorCategoryDefOf.Sharp, sharp);
-            armorValues.Add(AM_DefOf.Heat, heat);
+            armorValues.Add(AM_DefOf.Blunt, pawn.GetStatValue(StatDefOf.ArmorRating_Blunt));
+            armorValues.Add(DamageArmorCategoryDefOf.Sharp, pawn.GetStatValue(StatDefOf.ArmorRating_Sharp));
+            armorValues.Add(AM_DefOf.Heat, pawn.GetStatValue(StatDefOf.ArmorRating_Heat));
 
             armorOffsets.Add(AM_DefOf.Blunt, 0f);
             armorOffsets.Add(DamageArmorCategoryDefOf.Sharp, 0f);
@@ -72,9 +72,9 @@ namespace AdaptableMechanoids
 
             armorNewValues.Add(AM_DefOf.Blunt, 0f);
             armorNewValues.Add(DamageArmorCategoryDefOf.Sharp, 0f);
-            armorNewValues.Add(AM_DefOf.Heat, heat);
+            armorNewValues.Add(AM_DefOf.Heat, 0f);
 
-            DefName = name;
+            DefName = pawn.def.defName;
 
             damageAmounts.Add(AM_DefOf.Blunt, 0f);
             damageAmounts.Add(DamageArmorCategoryDefOf.Sharp, 0f);

@@ -55,7 +55,7 @@ namespace AdaptableMechanoids
             //Registering new mech type
             if(!component.mechList.Contains(this.pawn.def.defName) && this.pawn.RaceProps.IsMechanoid && !this.pawn.IsColonyMech && !this.pawn.Faction.def.humanlikeFaction)
             {
-                component.mechArmorList.Add(this.pawn.def.defName, new AM_MechArmorStats(pawn.GetStatValue(StatDefOf.ArmorRating_Blunt), pawn.GetStatValue(StatDefOf.ArmorRating_Sharp), pawn.GetStatValue(StatDefOf.ArmorRating_Heat), pawn.def.defName));
+                component.mechArmorList.Add(this.pawn.def.defName, new AM_MechArmorStats(this.pawn));
                 component.mechList.Add(this.pawn.def.defName);
             }
         }
