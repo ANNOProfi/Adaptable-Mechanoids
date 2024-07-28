@@ -14,5 +14,7 @@ namespace AdaptableMechanoids
         public static DamageArmorCategoryDef Blunt;
 
         public static DamageArmorCategoryDef Heat;
+
+        public static HediffDef AM_AdaptiveArmor;
     }
 }

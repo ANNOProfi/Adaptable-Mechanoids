@@ -6,23 +6,57 @@ namespace AdaptableMechanoids
 {
     public class AM_GameComponent_Adaptation : GameComponent
     {
-        private float armor_Blunt;
+        public Dictionary<string, AM_MechArmorStats> mechArmorList = new Dictionary<string, AM_MechArmorStats>();
 
-        private float armor_Sharp;
+        public HashSet<string> mechList = new HashSet<string>();
 
-        private float armor_Heat;
+        private int ticksToUpdate = AM_Utilities.Settings.adaptationTime;
 
-        public Dictionary<string, AM_MechArmorStats> mechList = new Dictionary<string, AM_MechArmorStats>();
+        private bool useHeatInitialised = false;
 
         public AM_GameComponent_Adaptation(Game game)
         {
         }
 
-        public override void StartedNewGame()
+        public override void GameComponentTick()
         {
-            base.StartedNewGame();
+            base.GameComponentTick();
+            if(ticksToUpdate != 0)
+            {
+                ticksToUpdate--;
+                return;
+            }
+            else
+            {
+                if(!useHeatInitialised && AM_Utilities.Settings.useHeat)
+                {
+                    useHeatInitialised = true;
 
-            Log.Message("Adaptation GameComp loaded");
+                    foreach(string name in mechList)
+                    {
+                        mechArmorList[name].ResetArmor();
+                    }
+                }
+
+                foreach(string name in mechList)
+                {
+                    mechArmorList[name].CalculateArmor(AM_Utilities.Settings.hardMode);
+                }
+
+                if(useHeatInitialised && !AM_Utilities.Settings.useHeat)
+                {
+                    useHeatInitialised = false;
+                }
+
+                ticksToUpdate = AM_Utilities.Settings.adaptationTime;
+            }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Collections.Look(ref mechList, false, "mechList", LookMode.Deep);
+            Scribe_Collections.Look(ref mechArmorList, "mechArmorList", LookMode.Deep, LookMode.Deep);
         }
     }
 }
