@@ -5,9 +5,6 @@
             <hediffGivers>
                 <li Class="HediffGiver_Birthday">
                     <hediff>AM_AdaptiveArmor</hediff>
-                    <!--<partsToAffect>
-                        <li>Body</li>
-                    </partsToAffect>-->
                     <ageFractionChanceCurve>
                         <points>
                             <li>(0, 1)</li>

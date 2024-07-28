@@ -30,17 +30,14 @@ namespace AdaptableMechanoids
 
             listing_Standard.Gap(10f);
             listing_Standard.Label("AdaptableMechanoids.Settings.MaxValue".Translate((settings.maxValue*100).ToString()), -1, "AdaptableMechanoids.Settings.MaxValueDesc".Translate());
-            //maxValueBuffer = settings.maxValue.ToString();
             listing_Standard.TextFieldNumeric(ref settings.maxValue, ref maxValueBuffer, 0f, StatDefOf.ArmorRating_Blunt.maxValue);
 
             listing_Standard.Gap(10f);
             listing_Standard.Label("AdaptableMechanoids.Settings.AdaptationTime".Translate(settings.adaptationTime.ToStringTicksToPeriodVerbose()), -1, "AdaptableMechanoids.Settings.AdaptationTimeDesc".Translate());
-            //timeBuffer = settings.adaptationTime.ToString();
             listing_Standard.TextFieldNumeric(ref settings.adaptationTime, ref timeBuffer, 1f, 3600000);
 
             listing_Standard.Gap(10f);
             listing_Standard.Label("AdaptableMechanoids.Settings.AdaptationStep".Translate((settings.adaptationStep*100).ToString()), -1, "AdaptableMechanoids.Settings.AdaptationStepDesc".Translate());
-            //stepBuffer = settings.adaptationStep.ToString();
             listing_Standard.TextFieldNumeric(ref settings.adaptationStep, ref stepBuffer, 0.00001f, 0.1f);
 
             listing_Standard.Gap(10f);

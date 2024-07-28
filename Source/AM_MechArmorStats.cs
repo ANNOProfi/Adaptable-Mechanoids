@@ -37,8 +37,6 @@ namespace AdaptableMechanoids
 
         private List<DamageArmorCategoryDef> armorTypes = new List<DamageArmorCategoryDef>();
 
-        //private float armor_totalOriginal = 0.0f;
-
         private float unspentPoints = 0f;
 
         private float adaptationStep;
@@ -67,18 +65,14 @@ namespace AdaptableMechanoids
             armorValues.Add(AM_DefOf.Blunt, blunt);
             armorValues.Add(DamageArmorCategoryDefOf.Sharp, sharp);
             armorValues.Add(AM_DefOf.Heat, heat);
-            //
 
             armorOffsets.Add(AM_DefOf.Blunt, 0f);
             armorOffsets.Add(DamageArmorCategoryDefOf.Sharp, 0f);
             armorOffsets.Add(AM_DefOf.Heat, 0f);
-            //
 
             armorNewValues.Add(AM_DefOf.Blunt, 0f);
             armorNewValues.Add(DamageArmorCategoryDefOf.Sharp, 0f);
             armorNewValues.Add(AM_DefOf.Heat, heat);
-
-            //armor_totalOriginal = armorValues[AM_DefOf.Blunt] + armorValues[DamageArmorCategoryDefOf.Sharp];
 
             DefName = name;
 
@@ -88,7 +82,6 @@ namespace AdaptableMechanoids
             if(AM_Utilities.Settings.useHeat)
             {
                 armorTypes.Add(AM_DefOf.Heat);
-                //armor_totalOriginal += armorValues[AM_DefOf.Heat];
 
                 damageAmounts.Add(AM_DefOf.Heat, 0f);
 
@@ -110,7 +103,6 @@ namespace AdaptableMechanoids
             {
                 armorTypes.Add(AM_DefOf.Heat);
                 armorOffsets.Add(AM_DefOf.Heat, 0f);
-                //armor_totalOriginal += armorValues[AM_DefOf.Heat];
 
                 damageAmounts.Add(AM_DefOf.Heat, 0f);
             }

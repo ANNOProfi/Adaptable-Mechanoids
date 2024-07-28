@@ -14,9 +14,5 @@
 		<li>Ludeon.RimWorld</li>
 	</loadAfter>
 
-	<incompatibleWith>
-		<!-- <li>arvkus.template</li> -->
-	</incompatibleWith>
-
 	<description>Enhances mechanoids to be an ever-evolving threat.</description>
 </ModMetaData>
