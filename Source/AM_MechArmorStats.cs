@@ -35,11 +35,11 @@ namespace AdaptableMechanoids
             }
         }
 
-        private List<DamageArmorCategoryDef> armorTypes = new List<DamageArmorCategoryDef>();
-
         private float unspentPoints = 0f;
 
         private float adaptationStep;
+
+        public List<DamageArmorCategoryDef> armorTypes = new List<DamageArmorCategoryDef>();
 
         public Dictionary<DamageArmorCategoryDef, float> armorValues = new Dictionary<DamageArmorCategoryDef, float>();
 
@@ -51,7 +51,7 @@ namespace AdaptableMechanoids
 
         private string defName = null;
 
-        public string DefName{get => defName; set => defName = value;}
+        public string DefName{get => defName;}
 
         private float maxValue = 2;
 
@@ -74,7 +74,7 @@ namespace AdaptableMechanoids
             armorNewValues.Add(DamageArmorCategoryDefOf.Sharp, 0f);
             armorNewValues.Add(AM_DefOf.Heat, 0f);
 
-            DefName = pawn.def.defName;
+            defName = pawn.def.defName;
 
             damageAmounts.Add(AM_DefOf.Blunt, 0f);
             damageAmounts.Add(DamageArmorCategoryDefOf.Sharp, 0f);
