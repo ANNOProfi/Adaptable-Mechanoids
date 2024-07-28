@@ -28,6 +28,7 @@ namespace AdaptableMechanoids
             }
             else
             {
+                //Resetting if heat armor is enabled mid-game
                 if(!useHeatInitialised && AM_Utilities.Settings.useHeat)
                 {
                     useHeatInitialised = true;

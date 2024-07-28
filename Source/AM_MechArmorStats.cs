@@ -79,6 +79,7 @@ namespace AdaptableMechanoids
             damageAmounts.Add(AM_DefOf.Blunt, 0f);
             damageAmounts.Add(DamageArmorCategoryDefOf.Sharp, 0f);
 
+            //Only enables heat armor when enabled in settings
             if(AM_Utilities.Settings.useHeat)
             {
                 armorTypes.Add(AM_DefOf.Heat);
@@ -99,6 +100,7 @@ namespace AdaptableMechanoids
 
             maxValue = AM_Utilities.Settings.maxValue;
 
+            //Adding heat armor if enabled mid-game
             if(useHeat)
             {
                 armorTypes.Add(AM_DefOf.Heat);
@@ -106,12 +108,14 @@ namespace AdaptableMechanoids
 
                 damageAmounts.Add(AM_DefOf.Heat, 0f);
             }
+            //Removing heat armor if disabled mid-game
             else if(usingHeat && !useHeat)
             {
                 damageAmounts.Remove(AM_DefOf.Heat);
 
                 if(!hardMode)
                 {
+                    //Refunding points
                     unspentPoints += armorOffsets[AM_DefOf.Heat];
                 }
                 
@@ -123,6 +127,8 @@ namespace AdaptableMechanoids
 
             if(!hardMode)
             {
+                //Recalculating armor distribution, under assumption that max distribution had been reached before reset
+                //No stepping
                 foreach(DamageArmorCategoryDef armor in armorTypes)
                 {
                     armorNewValues[armor] = Armor_total*(damageAmounts[armor]/(DamageAmountsTotal));
@@ -139,39 +145,6 @@ namespace AdaptableMechanoids
                         }
                     }
                 }
-            }
-        }
-
-        public void CalculateArmor(bool hardMode)
-        {
-
-            if(!hardMode)
-            {
-                if(usingHeat && !AM_Utilities.Settings.useHeat)
-                {
-                    damageAmounts.Remove(AM_DefOf.Heat);
-                    unspentPoints += armorOffsets[AM_DefOf.Heat];
-                    armorOffsets[AM_DefOf.Heat] = 0f;
-                    armorTypes.Remove(AM_DefOf.Heat);
-                }
-
-                foreach(DamageArmorCategoryDef armor in armorTypes)
-                {
-                    armorNewValues[armor] = Armor_total*(damageAmounts[armor]/(DamageAmountsTotal));
-                }
-
-                foreach(DamageArmorCategoryDef armor in armorTypes)
-                {
-                    if(armorNewValues[armor] < armorValues[armor])
-                    {
-                        if(armorOffsets[armor] - adaptationStep >= -armorValues[armor])
-                        {
-                            armorOffsets[armor] -= adaptationStep;
-                            unspentPoints += adaptationStep;
-                        }
-                    }
-                }
-
                 while(unspentPoints > 0f)
                 {
                     foreach(DamageArmorCategoryDef armor in armorTypes)
@@ -184,6 +157,39 @@ namespace AdaptableMechanoids
                     }
                 }
             }
+        }
+
+        public void CalculateArmor(bool hardMode)
+        {
+            //Calculating armor for regular mode
+            if(!hardMode)
+            {
+                //If heat armor was disabled without reset
+                if(usingHeat && !AM_Utilities.Settings.useHeat)
+                {
+                    damageAmounts.Remove(AM_DefOf.Heat);
+                    unspentPoints += armorOffsets[AM_DefOf.Heat];
+                    armorOffsets[AM_DefOf.Heat] = 0f;
+                    armorTypes.Remove(AM_DefOf.Heat);
+                }
+                foreach(DamageArmorCategoryDef armor in armorTypes)
+                {
+                    armorNewValues[armor] = Armor_total*(damageAmounts[armor]/(DamageAmountsTotal));
+                }
+                //Subtracting armor points
+                foreach(DamageArmorCategoryDef armor in armorTypes)
+                {
+                    if(armorNewValues[armor] < armorValues[armor])
+                    {
+                        if(armorOffsets[armor] - adaptationStep >= -armorValues[armor])
+                        {
+                            armorOffsets[armor] -= adaptationStep;
+                            unspentPoints += adaptationStep;
+                        }
+                    }
+                }
+            }
+            //Calculating for hard mode, slight balance adjustment
             else
             {
                 foreach(DamageArmorCategoryDef armor in armorTypes)
@@ -191,7 +197,7 @@ namespace AdaptableMechanoids
                     armorNewValues[armor] = armorValues[armor] + (damageAmounts[armor] * 0.01f);
                 }
             }
-
+            //Adding armor points
             if(unspentPoints > 0f || hardMode)
             {
                 foreach(DamageArmorCategoryDef armor in armorTypes)
@@ -205,6 +211,7 @@ namespace AdaptableMechanoids
                         }
                         else if(hardMode)
                         {
+                            //Slower in hard mode
                             armorOffsets[armor] += adaptationStep * 0.1f;
                         }
                     }

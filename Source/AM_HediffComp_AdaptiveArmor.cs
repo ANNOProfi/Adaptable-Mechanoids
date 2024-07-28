@@ -42,6 +42,7 @@ namespace AdaptableMechanoids
         public override void Notify_PawnPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.Notify_PawnPostApplyDamage(dinfo, totalDamageDealt);
+            //Making triple sure pawn is a hostile mech
             if(!this.pawn.Dead && this.pawn.RaceProps.IsMechanoid && !this.pawn.IsColonyMech && !this.pawn.Faction.def.humanlikeFaction)
             {
                 component.mechArmorList[pawn.def.defName].damageAmounts[dinfo.Def.armorCategory] += totalDamageDealt;
@@ -51,7 +52,7 @@ namespace AdaptableMechanoids
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
-
+            //Registering new mech type
             if(!component.mechList.Contains(this.pawn.def.defName) && this.pawn.RaceProps.IsMechanoid && !this.pawn.IsColonyMech && !this.pawn.Faction.def.humanlikeFaction)
             {
                 component.mechArmorList.Add(this.pawn.def.defName, new AM_MechArmorStats(pawn.GetStatValue(StatDefOf.ArmorRating_Blunt), pawn.GetStatValue(StatDefOf.ArmorRating_Sharp), pawn.GetStatValue(StatDefOf.ArmorRating_Heat), pawn.def.defName));
