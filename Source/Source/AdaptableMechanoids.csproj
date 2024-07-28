@@ -7,7 +7,7 @@
 		<!-- Modify [RootNamespace], [AssemblyName], [OutputPath], [VersionPrefix] -->
 		<RootNamespace>AdaptableMechanoids</RootNamespace>
 		<AssemblyName>AdaptableMechanoids</AssemblyName>
-		<OutputPath>../../1.4/Assemblies</OutputPath>
+		<OutputPath>../../1.5/Assemblies</OutputPath>
 		<VersionPrefix>1.0.0.0</VersionPrefix>
 
 		<!-- do not generate pdb file -->
@@ -27,24 +27,14 @@
 			<Private>False</Private>
 		</Reference>
 
-		<Reference Include="AthenaFramework">
-			<HintPath>..\..\..\..\..\..\workshop\content\294100\2903359518\1.4\Assemblies\AthenaFramework.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-
-		<Reference Include="CommunityFramework">
-			<HintPath>..\..\..\..\..\..\workshop\content\294100\2585162118\1.3\Assemblies\communityframework.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-
 		<!-- Harmony -->
 		<!--  <Reference Include="..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\*.dll">
 			<Private>False</Private>
 		</Reference>-->
 
 		<!-- Other Files -->
-		<None Include="../../1.4/Defs/**" LinkBase="Defs" />
-		<None Include="../../1.4/Assemblies/**" LinkBase="Assemblies" />
+		<None Include="../../1.5/Defs/**" LinkBase="Defs" />
+		<None Include="../../1.5/Assemblies/**" LinkBase="Assemblies" />
 		<None Include="../../Textures/**" LinkBase="Textures" />
 	</ItemGroup>
 </Project>
