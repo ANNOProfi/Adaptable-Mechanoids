@@ -13,12 +13,13 @@ namespace AdaptableMechanoids
         {
             get
             {
-                if(AM_Utilities.Settings.useHeat)
+                float armorTotal = 0f;
+                foreach(DamageArmorCategoryDef damage in armorTypes)
                 {
-                    return armorValues[AM_DefOf.Blunt] + armorValues[DamageArmorCategoryDefOf.Sharp] + armorValues[AM_DefOf.Heat];
+                    armorTotal += armorValues[damage];
                 }
 
-                return armorValues[AM_DefOf.Blunt] + armorValues[DamageArmorCategoryDefOf.Sharp];
+                return armorTotal;
             }
         }
 
@@ -26,12 +27,13 @@ namespace AdaptableMechanoids
         {
             get
             {
-                if(AM_Utilities.Settings.useHeat)
+                float damageTotal = 0f;
+                foreach(DamageArmorCategoryDef damage in armorTypes)
                 {
-                    return damageAmounts[AM_DefOf.Blunt] + damageAmounts[DamageArmorCategoryDefOf.Sharp] + damageAmounts[AM_DefOf.Heat];
+                    damageTotal += damageAmounts[damage];
                 }
 
-                return damageAmounts[AM_DefOf.Blunt] + damageAmounts[DamageArmorCategoryDefOf.Sharp]; 
+                return damageTotal;
             }
         }
 
@@ -57,9 +59,9 @@ namespace AdaptableMechanoids
 
         private bool usingHeat = false;
 
-        public AM_MechArmorStats(Pawn pawn)
+        public AM_MechArmorStats(Pawn pawn, AM_AdaptableArmor armor)
         {
-            armorTypes.Add(AM_DefOf.Blunt);
+            /*armorTypes.Add(AM_DefOf.Blunt);
             armorTypes.Add(DamageArmorCategoryDefOf.Sharp);
 
             armorValues.Add(AM_DefOf.Blunt, pawn.GetStatValue(StatDefOf.ArmorRating_Blunt));
@@ -74,7 +76,7 @@ namespace AdaptableMechanoids
             armorNewValues.Add(DamageArmorCategoryDefOf.Sharp, 0f);
             armorNewValues.Add(AM_DefOf.Heat, 0f);
 
-            defName = pawn.def.defName;
+            
 
             damageAmounts.Add(AM_DefOf.Blunt, 0f);
             damageAmounts.Add(DamageArmorCategoryDefOf.Sharp, 0f);
@@ -87,8 +89,34 @@ namespace AdaptableMechanoids
                 damageAmounts.Add(AM_DefOf.Heat, 0f);
 
                 usingHeat = true;
+            }*/
+
+            foreach(AM_ArmorTypes damage in armor.armorTypes)
+            {
+                //The important one, registers the armor as one to be calculated
+                armorTypes.Add(damage.damageType);
+
+                armorValues.Add(damage.damageType, pawn.GetStatValue(damage.armorType));
+
+                armorOffsets.Add(damage.damageType, 0f);
+
+                armorNewValues.Add(damage.damageType, 0f);
+
+                damageAmounts.Add(damage.damageType, 0f);
             }
 
+            if(!AM_Utilities.Settings.useHeat)
+            {
+                armorTypes.Remove(AM_DefOf.Heat);
+
+                damageAmounts.Remove(AM_DefOf.Heat);
+            }
+            else
+            {
+                usingHeat = true;
+            }
+
+            defName = pawn.def.defName;
             maxValue = AM_Utilities.Settings.maxValue;
             adaptationStep = AM_Utilities.Settings.adaptationStep;
         }

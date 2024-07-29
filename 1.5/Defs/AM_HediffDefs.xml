@@ -7,7 +7,23 @@
         <description>Mechanoid armor, that has been adapted to better protect against a specific threat.</description>
         <isBad>false</isBad>
         <hediffClass>AdaptableMechanoids.AM_Hediff_AdaptiveArmor</hediffClass>
-        <stages>
-        </stages>
+        <modExtensions>
+            <li Class="AdaptableMechanoids.AM_AdaptableArmor">
+                <armorTypes>
+                    <li>
+                        <armorType>ArmorRating_Sharp</armorType>    <!--StatDef-->
+                        <damageType>Sharp</damageType>              <!--DamageArmorCategoryDef-->
+                    </li>
+                    <li>
+                        <armorType>ArmorRating_Blunt</armorType>
+                        <damageType>Blunt</damageType>
+                    </li>
+                    <li>
+                        <armorType>ArmorRating_Heat</armorType>
+                        <damageType>Heat</damageType>
+                    </li>
+                </armorTypes>
+            </li>
+          </modExtensions>
     </HediffDef>
 </Defs>
