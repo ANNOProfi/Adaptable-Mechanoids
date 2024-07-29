@@ -9,7 +9,7 @@ namespace AdaptableMechanoids
     {
         private readonly AM_GameComponent_Adaptation component = Current.Game.GetComponent<AM_GameComponent_Adaptation>();
 
-        private HediffStage curStage;
+        public HediffStage curStage;
 
         public override HediffStage CurStage
         {

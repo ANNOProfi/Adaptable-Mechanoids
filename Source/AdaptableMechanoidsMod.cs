@@ -26,7 +26,7 @@ namespace AdaptableMechanoids
             listing_Standard.Begin(inRect);
 
             listing_Standard.Gap(10f);
-            listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.UseHeat".Translate(), ref settings.hardMode, "AdaptableMechanoids.Settings.UseHeatDesc".Translate());
+            listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.UseHeat".Translate(), ref settings.useHeat, "AdaptableMechanoids.Settings.UseHeatDesc".Translate());
 
             listing_Standard.Gap(10f);
             listing_Standard.Label("AdaptableMechanoids.Settings.MaxValue".Translate((settings.maxValue*100).ToString()), -1, "AdaptableMechanoids.Settings.MaxValueDesc".Translate());
