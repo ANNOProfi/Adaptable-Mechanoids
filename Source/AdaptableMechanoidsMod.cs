@@ -29,6 +29,9 @@ namespace AdaptableMechanoids
             listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.UseHeat".Translate(), ref settings.useHeat, "AdaptableMechanoids.Settings.UseHeatDesc".Translate());
 
             listing_Standard.Gap(10f);
+            listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.UseMax".Translate(), ref settings.useMax, "AdaptableMechanoids.Settings.UseMaxDesc".Translate());
+
+            listing_Standard.Gap(10f);
             listing_Standard.Label("AdaptableMechanoids.Settings.MaxValue".Translate((settings.maxValue*100).ToString()), -1, "AdaptableMechanoids.Settings.MaxValueDesc".Translate());
             listing_Standard.TextFieldNumeric(ref settings.maxValue, ref maxValueBuffer, 0f, StatDefOf.ArmorRating_Blunt.maxValue);
 

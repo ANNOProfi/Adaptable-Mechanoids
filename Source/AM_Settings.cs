@@ -1,4 +1,5 @@
 using Verse;
+using UnityEngine;
 
 namespace AdaptableMechanoids
 {
@@ -9,6 +10,8 @@ namespace AdaptableMechanoids
         public float maxValue = 2f;
 
         public bool useHeat = false;
+
+        public bool useMax = false;
 
         public int adaptationTime = 5000;
 
@@ -22,6 +25,7 @@ namespace AdaptableMechanoids
             Scribe_Values.Look(ref useHeat, "useHeat", defaultValue: false);
             Scribe_Values.Look(ref adaptationTime, "adaptationTime", defaultValue: 5000);
             Scribe_Values.Look(ref adaptationStep, "adaptationStep", defaultValue: 0.001f);
+            Scribe_Values.Look(ref useMax, "useMax", defaultValue: false);
         }
     }
 }

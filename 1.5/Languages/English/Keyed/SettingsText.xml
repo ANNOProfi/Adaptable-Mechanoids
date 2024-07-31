@@ -7,6 +7,9 @@
     <AdaptableMechanoids.Settings.UseHeat>Toggle heat armor usage</AdaptableMechanoids.Settings.UseHeat>
     <AdaptableMechanoids.Settings.UseHeatDesc>When enabled, mechanoids will tap into their heat armor for points, as well as blunt and sharp.</AdaptableMechanoids.Settings.UseHeatDesc>
 
+    <AdaptableMechanoids.Settings.UseMax>Toggle custom armor maximum</AdaptableMechanoids.Settings.UseMax>
+    <AdaptableMechanoids.Settings.UseMaxDesc>When enabled, the maximum armor that can be achieved can be customised below.</AdaptableMechanoids.Settings.UseMaxDesc>
+
     <AdaptableMechanoids.Settings.AdaptationTime>Adaptation interval. Currently {0} (Default: 5000)</AdaptableMechanoids.Settings.AdaptationTime>
     <AdaptableMechanoids.Settings.AdaptationTimeDesc>At what interval mechanoids will adapt.</AdaptableMechanoids.Settings.AdaptationTimeDesc>
 

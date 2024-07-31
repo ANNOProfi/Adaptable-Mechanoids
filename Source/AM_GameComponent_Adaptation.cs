@@ -14,6 +14,8 @@ namespace AdaptableMechanoids
 
         private bool useHeatInitialised = false;
 
+        private bool useMaxInitialised = false;
+
         public AM_GameComponent_Adaptation(Game game)
         {
         }
@@ -35,7 +37,17 @@ namespace AdaptableMechanoids
 
                     foreach(string name in mechList)
                     {
-                        mechArmorList[name].ResetArmor();
+                        mechArmorList[name].ResetArmor(false);
+                    }
+                }
+
+                if(!useMaxInitialised && AM_Utilities.Settings.useMax)
+                {
+                    useMaxInitialised = true;
+
+                    foreach(string name in mechList)
+                    {
+                        mechArmorList[name].ResetMax();
                     }
                 }
 
@@ -49,7 +61,31 @@ namespace AdaptableMechanoids
                     useHeatInitialised = false;
                 }
 
+                if(useMaxInitialised && !AM_Utilities.Settings.useMax)
+                {
+                    useMaxInitialised = false;
+
+                    foreach(string name in mechList)
+                    {
+                        mechArmorList[name].ResetMax();
+                    }
+                }
+
                 ticksToUpdate = AM_Utilities.Settings.adaptationTime;
+            }
+        }
+
+        public override void StartedNewGame()
+        {
+            base.StartedNewGame();
+            if(AM_Utilities.Settings.useHeat)
+            {
+                useHeatInitialised = true;
+            }
+
+            if(AM_Utilities.Settings.useMax)
+            {
+                useMaxInitialised = true;
             }
         }
 
