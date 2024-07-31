@@ -19,7 +19,7 @@ namespace AdaptableMechanoids
                 {
                     if(component.mechList.Contains(this.pawn.def.defName))
                     {
-                        StatModifier armorBlunt = new StatModifier();
+                        /*StatModifier armorBlunt = new StatModifier();
                         armorBlunt.stat = StatDefOf.ArmorRating_Blunt;
                         armorBlunt.value = component.mechArmorList[pawn.def.defName].armorOffsets[AM_DefOf.Blunt];
 
@@ -29,10 +29,19 @@ namespace AdaptableMechanoids
 
                         StatModifier armorHeat = new StatModifier();
                         armorHeat.stat = StatDefOf.ArmorRating_Heat;
-                        armorHeat.value = component.mechArmorList[pawn.def.defName].armorOffsets[AM_DefOf.Heat];
+                        armorHeat.value = component.mechArmorList[pawn.def.defName].armorOffsets[AM_DefOf.Heat];*/
 
                         curStage = new HediffStage();
-                        curStage.statOffsets = new List<StatModifier>{armorBlunt, armorSharp, armorHeat};
+                        curStage.statOffsets = new List<StatModifier>();
+
+                        foreach(AM_ArmorTypes armorTypes in this.def.GetModExtension<AM_AdaptableArmor>().armorTypes)
+                        {
+                            StatModifier statModifier = new StatModifier();
+                            statModifier.stat = armorTypes.armorType;
+                            statModifier.value = component.mechArmorList[pawn.def.defName].armorOffsets[armorTypes.damageType];
+
+                            curStage.statOffsets.Add(statModifier);
+                        }
                     }
                 }
                 return curStage;
@@ -55,7 +64,7 @@ namespace AdaptableMechanoids
             //Registering new mech type
             if(!component.mechList.Contains(this.pawn.def.defName) && this.pawn.RaceProps.IsMechanoid && !this.pawn.IsColonyMech && !this.pawn.Faction.def.humanlikeFaction)
             {
-                component.mechArmorList.Add(this.pawn.def.defName, new AM_MechArmorStats(this.pawn));
+                component.mechArmorList.Add(this.pawn.def.defName, new AM_MechArmorStats(this.pawn, this.def.GetModExtension<AM_AdaptableArmor>()));
                 component.mechList.Add(this.pawn.def.defName);
             }
         }

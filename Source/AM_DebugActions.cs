@@ -13,7 +13,7 @@ namespace AdaptableMechanoids
 
             foreach(string name in component.mechList)
             {
-                component.mechArmorList[name].ResetArmor();
+                component.mechArmorList[name].ResetArmor(true);
             }
         }
     }
