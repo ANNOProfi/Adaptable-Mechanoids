@@ -11,7 +11,7 @@
                             <li>(1, 1)</li>
                         </points>
                     </ageFractionChanceCurve>
-                    <averageSeverityPerDayBeforeGeneration>1</averageSeverityPerDayBeforeGeneration>
+                    <averageSeverityPerDayBeforeGeneration>0</averageSeverityPerDayBeforeGeneration>
                 </li>
             </hediffGivers>
     </HediffGiverSetDef>

@@ -1,19 +1,13 @@
 using System.Collections.Generic;
-using System.Configuration;
-using RimWorld;
 using Verse;
 
 namespace AdaptableMechanoids
 {
     public class AM_GameComponent_Adaptation : GameComponent
     {
-        //public Dictionary<string, AM_MechArmorStats> mechArmorList = new Dictionary<string, AM_MechArmorStats>();
-
         public Dictionary<bool, Dictionary<string, AM_MechArmorStats>> mechFactionList = new Dictionary<bool, Dictionary<string, AM_MechArmorStats>>();
 
         public Dictionary<bool, HashSet<string>> mechList = new Dictionary<bool, HashSet<string>>();
-
-        //public HashSet<string> mechList = new HashSet<string>();
 
         private int ticksToUpdate = AM_Utilities.Settings.adaptationTime;
 
@@ -40,7 +34,7 @@ namespace AdaptableMechanoids
                 {
                     useHeatInitialised = true;
 
-                    foreach(bool colonyMech in mechFactionList.Keys)
+                    foreach(bool colonyMech in mechList.Keys)
                     {
                         foreach(string name in mechList[colonyMech])
                         {
@@ -53,7 +47,7 @@ namespace AdaptableMechanoids
                 {
                     useMaxInitialised = true;
 
-                    foreach(bool colonyMech in mechFactionList.Keys)
+                    foreach(bool colonyMech in mechList.Keys)
                     {
                         foreach(string name in mechList[colonyMech])
                         {
@@ -62,7 +56,7 @@ namespace AdaptableMechanoids
                     }
                 }
 
-                foreach(bool colonyMech in mechFactionList.Keys)
+                foreach(bool colonyMech in mechList.Keys)
                 {
                     foreach(string name in mechList[colonyMech])
                     {
@@ -104,12 +98,6 @@ namespace AdaptableMechanoids
             {
                 useMaxInitialised = true;
             }
-
-            mechFactionList.Add(true, new Dictionary<string, AM_MechArmorStats>());
-            mechFactionList.Add(false, new Dictionary<string, AM_MechArmorStats>());
-
-            mechList.Add(true, new HashSet<string>());
-            mechList.Add(false, new HashSet<string>());
         }
 
         public override void ExposeData()
