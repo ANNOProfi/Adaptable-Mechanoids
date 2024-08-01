@@ -3,15 +3,15 @@
     <HediffGiverSetDef>
         <defName>AM_MechAdaptationHediffGiver</defName>
             <hediffGivers>
-                <li Class="HediffGiver_Birthday">
+                <li Class="AdaptableMechanoids.AM_HediffGiver_Armor">
                     <hediff>AM_AdaptiveArmor</hediff>
-                    <ageFractionChanceCurve>
+                    <!--<ageFractionChanceCurve>
                         <points>
                             <li>(0, 1)</li>
                             <li>(1, 1)</li>
                         </points>
                     </ageFractionChanceCurve>
-                    <averageSeverityPerDayBeforeGeneration>0</averageSeverityPerDayBeforeGeneration>
+                    <averageSeverityPerDayBeforeGeneration>0</averageSeverityPerDayBeforeGeneration>-->
                 </li>
             </hediffGivers>
     </HediffGiverSetDef>

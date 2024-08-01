@@ -38,11 +38,6 @@ namespace AdaptableMechanoids
         public override void Notify_PawnPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
             base.Notify_PawnPostApplyDamage(dinfo, totalDamageDealt);
-            if((AM_Utilities.Settings.adaptAIMech && !AM_Utilities.Settings.adaptColonyMech && pawn.IsColonyMech) || (!AM_Utilities.Settings.adaptAIMech && AM_Utilities.Settings.adaptColonyMech && !pawn.IsColonyMech) || !this.pawn.RaceProps.IsMechanoid)
-            {
-                pawn.health.RemoveHediff(this);
-            }
-
             if(!this.pawn.Dead && (!this.pawn.Faction.def.humanlikeFaction || pawn.Faction.IsPlayer) && totalDamageDealt > 0f)
             {
                 component.mechFactionList[pawn.IsColonyMech].TryGetValue(pawn.def.defName).damageAmounts[dinfo.Def.armorCategory] += totalDamageDealt;
@@ -52,10 +47,6 @@ namespace AdaptableMechanoids
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
-            if((AM_Utilities.Settings.adaptAIMech && !AM_Utilities.Settings.adaptColonyMech && pawn.IsColonyMech) || (!AM_Utilities.Settings.adaptAIMech && AM_Utilities.Settings.adaptColonyMech && !pawn.IsColonyMech) || !this.pawn.RaceProps.IsMechanoid)
-            {
-                pawn.health.RemoveHediff(this);
-            }
             //Registering new mech type
             if(!component.mechFactionList.ContainsKey(pawn.IsColonyMech))
             {
