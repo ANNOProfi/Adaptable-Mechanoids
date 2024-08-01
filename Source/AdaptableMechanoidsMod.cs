@@ -26,6 +26,12 @@ namespace AdaptableMechanoids
             listing_Standard.Begin(inRect);
 
             listing_Standard.Gap(10f);
+            listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.AdaptAIMech".Translate(), ref settings.adaptAIMech, "AdaptableMechanoids.Settings.AdaptAIMechDesc".Translate());
+
+            listing_Standard.Gap(10f);
+            listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.AdaptColonyMech".Translate(), ref settings.adaptColonyMech, "AdaptableMechanoids.Settings.AdaptColonyMech".Translate());
+
+            listing_Standard.Gap(10f);
             listing_Standard.CheckboxLabeled("AdaptableMechanoids.Settings.UseHeat".Translate(), ref settings.useHeat, "AdaptableMechanoids.Settings.UseHeatDesc".Translate());
 
             listing_Standard.Gap(10f);

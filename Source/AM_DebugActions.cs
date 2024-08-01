@@ -11,9 +11,12 @@ namespace AdaptableMechanoids
         {
             AM_GameComponent_Adaptation component = Current.Game.GetComponent<AM_GameComponent_Adaptation>();
 
-            foreach(string name in component.mechList)
+            foreach(bool colonyMech in component.mechFactionList.Keys)
             {
-                component.mechArmorList[name].ResetArmor(true);
+                foreach(string name in component.mechList[colonyMech])
+                {
+                    component.mechFactionList[colonyMech].TryGetValue(name).ResetArmor(true);
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Configuration;
 using RimWorld;
 using Verse;
 
@@ -6,9 +7,13 @@ namespace AdaptableMechanoids
 {
     public class AM_GameComponent_Adaptation : GameComponent
     {
-        public Dictionary<string, AM_MechArmorStats> mechArmorList = new Dictionary<string, AM_MechArmorStats>();
+        //public Dictionary<string, AM_MechArmorStats> mechArmorList = new Dictionary<string, AM_MechArmorStats>();
 
-        public HashSet<string> mechList = new HashSet<string>();
+        public Dictionary<bool, Dictionary<string, AM_MechArmorStats>> mechFactionList = new Dictionary<bool, Dictionary<string, AM_MechArmorStats>>();
+
+        public Dictionary<bool, HashSet<string>> mechList = new Dictionary<bool, HashSet<string>>();
+
+        //public HashSet<string> mechList = new HashSet<string>();
 
         private int ticksToUpdate = AM_Utilities.Settings.adaptationTime;
 
@@ -35,9 +40,12 @@ namespace AdaptableMechanoids
                 {
                     useHeatInitialised = true;
 
-                    foreach(string name in mechList)
+                    foreach(bool colonyMech in mechFactionList.Keys)
                     {
-                        mechArmorList[name].ResetArmor(false);
+                        foreach(string name in mechList[colonyMech])
+                        {
+                            mechFactionList[colonyMech].TryGetValue(name).ResetArmor(false);
+                        }
                     }
                 }
 
@@ -45,15 +53,21 @@ namespace AdaptableMechanoids
                 {
                     useMaxInitialised = true;
 
-                    foreach(string name in mechList)
+                    foreach(bool colonyMech in mechFactionList.Keys)
                     {
-                        mechArmorList[name].ResetMax();
+                        foreach(string name in mechList[colonyMech])
+                        {
+                            mechFactionList[colonyMech].TryGetValue(name).ResetMax();
+                        }
                     }
                 }
 
-                foreach(string name in mechList)
+                foreach(bool colonyMech in mechFactionList.Keys)
                 {
-                    mechArmorList[name].CalculateArmor(AM_Utilities.Settings.hardMode);
+                    foreach(string name in mechList[colonyMech])
+                    {
+                        mechFactionList[colonyMech].TryGetValue(name).CalculateArmor(AM_Utilities.Settings.hardMode);
+                    }
                 }
 
                 if(useHeatInitialised && !AM_Utilities.Settings.useHeat)
@@ -65,9 +79,12 @@ namespace AdaptableMechanoids
                 {
                     useMaxInitialised = false;
 
-                    foreach(string name in mechList)
+                    foreach(bool colonyMech in mechFactionList.Keys)
                     {
-                        mechArmorList[name].ResetMax();
+                        foreach(string name in mechList[colonyMech])
+                        {
+                            mechFactionList[colonyMech].TryGetValue(name).ResetMax();
+                        }
                     }
                 }
 
@@ -87,13 +104,19 @@ namespace AdaptableMechanoids
             {
                 useMaxInitialised = true;
             }
+
+            mechFactionList.Add(true, new Dictionary<string, AM_MechArmorStats>());
+            mechFactionList.Add(false, new Dictionary<string, AM_MechArmorStats>());
+
+            mechList.Add(true, new HashSet<string>());
+            mechList.Add(false, new HashSet<string>());
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look(ref mechList, false, "mechList", LookMode.Deep);
-            Scribe_Collections.Look(ref mechArmorList, "mechArmorList", LookMode.Deep, LookMode.Deep);
+            Scribe_Collections.Look(ref mechList, "mechList", LookMode.Deep, LookMode.Deep);
+            Scribe_Collections.Look(ref mechFactionList, "mechFactionList", LookMode.Deep, LookMode.Deep);
         }
     }
 }
