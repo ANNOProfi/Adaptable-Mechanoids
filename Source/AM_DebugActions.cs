@@ -1,6 +1,5 @@
 using LudeonTK;
 using Verse;
-using RimWorld;
 
 namespace AdaptableMechanoids
 {
@@ -11,9 +10,10 @@ namespace AdaptableMechanoids
         {
             AM_GameComponent_Adaptation component = Current.Game.GetComponent<AM_GameComponent_Adaptation>();
 
-            foreach(string name in component.mechList)
+            foreach(string name in component.mechList.Keys)
             {
-                component.mechArmorList[name].ResetArmor(true);
+                Log.Message("AM_Debug: Resetting armor for "+name);
+                component.mechList[name].ResetArmor(true);
             }
         }
     }

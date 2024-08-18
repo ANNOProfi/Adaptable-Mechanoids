@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
-using LudeonTK;
 using UnityEngine;
 
 namespace AdaptableMechanoids
 {
-    public class AM_MechArmorStats
+    public class AM_MechArmorStats : IExposable
     {
         private float Armor_total
         {
@@ -56,9 +54,9 @@ namespace AdaptableMechanoids
 
         private float adaptationStep;
 
-        public List<DamageArmorCategoryDef> armorTypes = new List<DamageArmorCategoryDef>();
+        public HashSet<DamageArmorCategoryDef> armorTypes = new HashSet<DamageArmorCategoryDef>();
 
-        private List<DamageArmorCategoryDef> tickingArmorTypes = new List<DamageArmorCategoryDef>();
+        private HashSet<DamageArmorCategoryDef> tickingArmorTypes = new HashSet<DamageArmorCategoryDef>();
 
         public Dictionary<DamageArmorCategoryDef, float> armorValues = new Dictionary<DamageArmorCategoryDef, float>();
 
@@ -76,7 +74,12 @@ namespace AdaptableMechanoids
 
         private bool usingHeat = false;
 
-        public AM_MechArmorStats(Pawn pawn, AM_AdaptableArmor armor)
+        public AM_MechArmorStats()
+        {
+            
+        }
+
+        public void Register(Pawn pawn, AM_AdaptableArmor armor)
         {
             foreach(AM_ArmorTypes damage in armor.armorTypes)
             {
@@ -133,7 +136,7 @@ namespace AdaptableMechanoids
         {
             if(debug)
             {
-                Log.Message("AM: Resetting armor");
+                Log.Message("AM_Debug: Resetting armor");
             }
             bool useHeat = AM_Utilities.Settings.useHeat;
             bool hardMode = AM_Utilities.Settings.hardMode;
@@ -150,12 +153,12 @@ namespace AdaptableMechanoids
             //Adding heat armor if enabled mid-game
             if(debug)
             {
-                Log.Message("AM: Checking if heat enabled mid-game");
+                Log.Message("AM_Debug: Checking if heat enabled mid-game");
             }
             
             if(!usingHeat && useHeat)
             {
-                Log.Message("AM: Heat enabled mid-game");
+                Log.Message("AM_Debug: Heat enabled mid-game");
                 armorTypes.Add(AM_DefOf.Heat);
                 armorOffsets.Add(AM_DefOf.Heat, 0f);
 
@@ -166,7 +169,7 @@ namespace AdaptableMechanoids
 
             if(debug)
             {
-                Log.Message("AM: Checking if heat disabled mid-game");
+                Log.Message("AM_Debug: Checking if heat disabled mid-game");
             }
             
             //Removing heat armor if disabled mid-game
@@ -174,7 +177,7 @@ namespace AdaptableMechanoids
             {
                 if(debug)
                 {
-                    Log.Message("AM: Heat disabled mid-game");
+                    Log.Message("AM_Debug: Heat disabled mid-game");
                 }
                 
                 damageAmounts.Remove(AM_DefOf.Heat);
@@ -195,7 +198,7 @@ namespace AdaptableMechanoids
             {
                 if(debug)
                 {
-                    Log.Message("AM: Recalculating armor");
+                    Log.Message("AM_Debug: Recalculating armor");
                 }
 
                 tickingArmorTypes.Clear();
@@ -212,7 +215,7 @@ namespace AdaptableMechanoids
                     }
                     if(debug)
                     {
-                        Log.Message("AM: New "+armor+" armor: "+armorNewValues[armor]*100+"%");
+                        Log.Message("AM_Debug: New "+armor+" armor: "+armorNewValues[armor]*100+"%");
                     }
                 }
                 
@@ -226,7 +229,7 @@ namespace AdaptableMechanoids
                             armorNewValues[armor] = points/tickingArmorTypes.Count();
                             if(debug)
                             {
-                                Log.Message("AM: New "+armor+" armor: "+armorNewValues[armor]*100+"%");
+                                Log.Message("AM_Debug: New "+armor+" armor: "+armorNewValues[armor]*100+"%");
                             }
                         }
                     }
@@ -238,7 +241,7 @@ namespace AdaptableMechanoids
 
                 if(debug)
                 {
-                    Log.Message("AM: Subtracting armor");
+                    Log.Message("AM_Debug: Subtracting armor");
                 }
 
                 foreach(DamageArmorCategoryDef armor in armorTypes)
@@ -255,10 +258,10 @@ namespace AdaptableMechanoids
 
                 if(debug)
                 {
-                    Log.Message("AM: Available points: "+unspentPoints*100+"%");
-                    Log.Message("AM: Adding armor");
+                    Log.Message("AM_Debug: Available points: "+unspentPoints*100+"%");
+                    Log.Message("AM_Debug: Adding armor");
                 }
-                if(unspentPoints > 0f)
+                if(unspentPoints >= adaptationStep)
                 {
                     foreach(DamageArmorCategoryDef armor in armorTypes)
                     {
@@ -272,8 +275,8 @@ namespace AdaptableMechanoids
 
                 if(debug)
                 {
-                    Log.Message("AM: Points left: "+unspentPoints*100+"%");
-                    Log.Message("AM: Reset finished");
+                    Log.Message("AM_Debug: Points left: "+unspentPoints*100+"%");
+                    Log.Message("AM_Debug: Reset finished");
                 }
             }
         }
@@ -292,19 +295,6 @@ namespace AdaptableMechanoids
                     armorTypes.Remove(AM_DefOf.Heat);
                 }
                 //Calculating and subtracting armor points
-                /*foreach(DamageArmorCategoryDef armor in armorTypes)
-                {
-                    armorNewValues[armor] = Armor_total*(damageAmounts[armor]/(DamageAmountsTotal));
-
-                    if(armorNewValues[armor] < armorValues[armor])
-                    {
-                        if(armorOffsets[armor] - adaptationStep >= -armorValues[armor])
-                        {
-                            armorOffsets[armor] -= adaptationStep;
-                            unspentPoints += adaptationStep;
-                        }
-                    }
-                }*/
 
                 tickingArmorTypes.Clear();
 
@@ -338,7 +328,7 @@ namespace AdaptableMechanoids
                 {
                     if(armorNewValues[armor] < armorValues[armor])
                     {
-                        while(armorOffsets[armor] - adaptationStep >= -armorValues[armor] && armorOffsets[armor] + armorValues[armor] > armorNewValues[armor])
+                        if(armorOffsets[armor] - adaptationStep >= -armorValues[armor] && armorOffsets[armor] + armorValues[armor] > armorNewValues[armor])
                         {
                             armorOffsets[armor] -= adaptationStep;
                             unspentPoints += adaptationStep;
@@ -346,17 +336,31 @@ namespace AdaptableMechanoids
                     }
                 }
 
+                List<bool> failsafe = new List<bool>();
+
                 //Adding armor points
                 while(unspentPoints >= adaptationStep)
                 {
                     foreach(DamageArmorCategoryDef armor in armorTypes)
                     {
+                        failsafe.Add(false);
                         if(armorNewValues[armor] > armorValues[armor] && (armorOffsets[armor] + armorValues[armor]) < maxValue)
                         {
                             armorOffsets[armor] += adaptationStep;
                             unspentPoints -= adaptationStep;
                         }
+                        else
+                        {
+                            failsafe.RemoveLast();
+                        }
                     }
+
+                    if(failsafe.Empty())
+                    {
+                        break;
+                    }
+
+                    failsafe.Clear();
                 }
             }
             //Calculating for hard mode, slight balance adjustment
@@ -374,5 +378,22 @@ namespace AdaptableMechanoids
                 }
             }
         }
+
+        public void ExposeData()
+        {
+            Scribe_Collections.Look(ref armorTypes, "armorTypes", LookMode.Def);
+            Scribe_Collections.Look(ref armorValues, "armorValues", LookMode.Def, LookMode.Value);
+            Scribe_Collections.Look(ref armorOffsets, "armorOffsets", LookMode.Def, LookMode.Value);
+            Scribe_Collections.Look(ref damageAmounts, "damageAmounts", LookMode.Def, LookMode.Value);
+
+            Scribe_Values.Look(ref usingHeat, "usingHeat", false);
+            Scribe_Values.Look(ref maxValue, "maxValue", StatDefOf.ArmorRating_Blunt.maxValue);
+            Scribe_Values.Look(ref adaptationStep, "adaptationStep", 0.001f);
+        }
+
+        /*public string GetUniqueLoadID()
+        {
+            return "AM_MechArmorStats_"+ loadID;
+        }*/
     }
 }

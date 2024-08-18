@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
@@ -11,26 +10,16 @@ namespace AdaptableMechanoids
 
         public HediffStage curStage;
 
+        private bool registered = false;
+
         public override HediffStage CurStage
         {
             get
             {
                 if(curStage == null)
                 {
-                    if(component.mechList.Contains(this.pawn.def.defName))
+                    if(registered)
                     {
-                        /*StatModifier armorBlunt = new StatModifier();
-                        armorBlunt.stat = StatDefOf.ArmorRating_Blunt;
-                        armorBlunt.value = component.mechArmorList[pawn.def.defName].armorOffsets[AM_DefOf.Blunt];
-
-                        StatModifier armorSharp = new StatModifier();
-                        armorSharp.stat = StatDefOf.ArmorRating_Sharp;
-                        armorSharp.value = component.mechArmorList[pawn.def.defName].armorOffsets[DamageArmorCategoryDefOf.Sharp];
-
-                        StatModifier armorHeat = new StatModifier();
-                        armorHeat.stat = StatDefOf.ArmorRating_Heat;
-                        armorHeat.value = component.mechArmorList[pawn.def.defName].armorOffsets[AM_DefOf.Heat];*/
-
                         curStage = new HediffStage();
                         curStage.statOffsets = new List<StatModifier>();
 
@@ -38,7 +27,7 @@ namespace AdaptableMechanoids
                         {
                             StatModifier statModifier = new StatModifier();
                             statModifier.stat = armorTypes.armorType;
-                            statModifier.value = component.mechArmorList[pawn.def.defName].armorOffsets[armorTypes.damageType];
+                            statModifier.value = component.RequestAdaptation(pawn.def.defName, armorTypes.damageType, CheckMechKind());
 
                             curStage.statOffsets.Add(statModifier);
                         }
@@ -48,25 +37,54 @@ namespace AdaptableMechanoids
             }
         }
 
+        public AM_MechKinds CheckMechKind()
+        {
+            if(pawn.IsColonyMech)
+            {
+                return AM_MechKinds.Friend;
+            }
+            else
+            {
+                return AM_MechKinds.Foe;
+            }
+        }
+
         public override void Notify_PawnPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
-            base.Notify_PawnPostApplyDamage(dinfo, totalDamageDealt);
-            //Making triple sure pawn is a hostile mech
-            if(!this.pawn.Dead && this.pawn.RaceProps.IsMechanoid && !this.pawn.IsColonyMech && !this.pawn.Faction.def.humanlikeFaction)
+            if(!registered)
             {
-                component.mechArmorList[pawn.def.defName].damageAmounts[dinfo.Def.armorCategory] += totalDamageDealt;
+                Log.Warning("Mech "+ pawn.def.defName +" has requested adaptation before being registered.");
             }
+
+            if(!this.pawn.Dead && (!this.pawn.Faction.def.humanlikeFaction || pawn.Faction.IsPlayer) && totalDamageDealt > 0f)
+            {
+                component.AddDamage(pawn.def.defName, CheckMechKind(), dinfo.Def.armorCategory, totalDamageDealt);
+            }
+        }
+
+        public void Register()
+        {
+            component.Register(pawn.def.defName, CheckMechKind(), pawn, def.GetModExtension<AM_AdaptableArmor>());
+
+            registered = true;
         }
 
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
+
             //Registering new mech type
-            if(!component.mechList.Contains(this.pawn.def.defName) && this.pawn.RaceProps.IsMechanoid && !this.pawn.IsColonyMech && !this.pawn.Faction.def.humanlikeFaction)
+            if(!registered)
             {
-                component.mechArmorList.Add(this.pawn.def.defName, new AM_MechArmorStats(this.pawn, this.def.GetModExtension<AM_AdaptableArmor>()));
-                component.mechList.Add(this.pawn.def.defName);
+                Register();
             }
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+            Scribe_Values.Look(ref registered, "registered", defaultValue: false);
         }
     }
 }
