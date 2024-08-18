@@ -54,9 +54,9 @@ namespace AdaptableMechanoids
 
         private float adaptationStep;
 
-        public List<DamageArmorCategoryDef> armorTypes = new List<DamageArmorCategoryDef>();
+        public HashSet<DamageArmorCategoryDef> armorTypes = new HashSet<DamageArmorCategoryDef>();
 
-        private List<DamageArmorCategoryDef> tickingArmorTypes = new List<DamageArmorCategoryDef>();
+        private HashSet<DamageArmorCategoryDef> tickingArmorTypes = new HashSet<DamageArmorCategoryDef>();
 
         public Dictionary<DamageArmorCategoryDef, float> armorValues = new Dictionary<DamageArmorCategoryDef, float>();
 
@@ -331,10 +331,11 @@ namespace AdaptableMechanoids
                     }
                 }
 
+                List<bool> failsafe = new List<bool>();
+
                 //Adding armor points
                 while(unspentPoints >= adaptationStep)
                 {
-                    List<bool> failsafe = new List<bool>();
                     foreach(DamageArmorCategoryDef armor in armorTypes)
                     {
                         failsafe.Add(false);
@@ -371,6 +372,18 @@ namespace AdaptableMechanoids
                     }
                 }
             }
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Collections.Look(ref armorTypes, "armorTypes", LookMode.Deep);
+            Scribe_Collections.Look(ref armorValues, "armorValues", LookMode.Deep);
+            Scribe_Collections.Look(ref armorOffsets, "armorOffsets", LookMode.Deep);
+            Scribe_Collections.Look(ref damageAmounts, "damageAmounts", LookMode.Deep);
+
+            Scribe_Values.Look(ref usingHeat, "usingHeat", false);
+            Scribe_Values.Look(ref maxValue, "maxValue", StatDefOf.ArmorRating_Blunt.maxValue);
+            Scribe_Values.Look(ref adaptationStep, "adaptationStep", 0.1f);
         }
     }
 }

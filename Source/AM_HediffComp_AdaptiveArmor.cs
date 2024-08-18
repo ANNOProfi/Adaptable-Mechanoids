@@ -10,13 +10,17 @@ namespace AdaptableMechanoids
 
         public HediffStage curStage;
 
+        private bool registered = false;
+
+        private string name;
+
         public override HediffStage CurStage
         {
             get
             {
                 if(curStage == null)
                 {
-                    if(component.mechList.ContainsKey(pawn.IsColonyMech) && component.mechList[pawn.IsColonyMech].Contains(this.pawn.def.defName))
+                    if(registered)
                     {
                         curStage = new HediffStage();
                         curStage.statOffsets = new List<StatModifier>();
@@ -25,7 +29,7 @@ namespace AdaptableMechanoids
                         {
                             StatModifier statModifier = new StatModifier();
                             statModifier.stat = armorTypes.armorType;
-                            statModifier.value = component.mechFactionList[pawn.IsColonyMech].TryGetValue(pawn.def.defName).armorOffsets[armorTypes.damageType];
+                            statModifier.value = component.RequestAdaptation(name, armorTypes.damageType, CheckMechKind());
 
                             curStage.statOffsets.Add(statModifier);
                         }
@@ -35,34 +39,56 @@ namespace AdaptableMechanoids
             }
         }
 
+        public AM_MechKinds CheckMechKind()
+        {
+            if(pawn.IsColonyMech)
+            {
+                return AM_MechKinds.Friend;
+            }
+            else
+            {
+                return AM_MechKinds.Foe;
+            }
+        }
+
         public override void Notify_PawnPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
         {
-            base.Notify_PawnPostApplyDamage(dinfo, totalDamageDealt);
+            if(!registered)
+            {
+                Log.Warning("Mech "+ name +" has requested adaptation before being registered.");
+            }
+
             if(!this.pawn.Dead && (!this.pawn.Faction.def.humanlikeFaction || pawn.Faction.IsPlayer) && totalDamageDealt > 0f)
             {
-                component.mechFactionList[pawn.IsColonyMech].TryGetValue(pawn.def.defName).damageAmounts[dinfo.Def.armorCategory] += totalDamageDealt;
+                component.AddDamage(name, CheckMechKind(), dinfo.Def.armorCategory, totalDamageDealt);
             }
+        }
+
+        public void Register()
+        {
+            component.Register(name, CheckMechKind(), pawn, def.GetModExtension<AM_AdaptableArmor>());
+
+            registered = true;
         }
 
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
+
+            name = pawn.def.defName;
             //Registering new mech type
-            if(!component.mechFactionList.ContainsKey(pawn.IsColonyMech))
+            if(!registered)
             {
-                component.mechFactionList.Add(pawn.IsColonyMech, new Dictionary<string, AM_MechArmorStats>());
+                Register();
             }
+        }
 
-            if(!component.mechList.ContainsKey(pawn.IsColonyMech))
-            {
-                component.mechList.Add(pawn.IsColonyMech, new HashSet<string>());
-            }
+        public override void ExposeData()
+        {
+            base.ExposeData();
 
-            if(!component.mechList[pawn.IsColonyMech].Contains(this.pawn.def.defName) && this.pawn.RaceProps.IsMechanoid)
-            {
-                component.mechFactionList[pawn.IsColonyMech].Add(pawn.def.defName, new AM_MechArmorStats(this.pawn, this.def.GetModExtension<AM_AdaptableArmor>()));
-                component.mechList[pawn.IsColonyMech].Add(this.pawn.def.defName);
-            }
+            Scribe_Values.Look(ref registered, "registered", defaultValue: false);
+            Scribe_Values.Look(ref name, "name", defaultValue: pawn.def.defName);
         }
     }
 }

@@ -7,9 +7,12 @@ namespace AdaptableMechanoids
     {
         public override void OnIntervalPassed(Pawn pawn, Hediff cause)
         {
-            if((AM_Utilities.Settings.adaptAIMech && !AM_Utilities.Settings.adaptColonyMech && !pawn.IsColonyMech) || (!AM_Utilities.Settings.adaptAIMech && AM_Utilities.Settings.adaptColonyMech && pawn.IsColonyMech))
+            if(!pawn.health.hediffSet.HasHediff(hediff))
             {
-                HediffGiverUtility.TryApply(pawn, hediff, (IEnumerable<BodyPartDef>)null, false, 1, (List<Hediff>)null);
+                if((AM_Utilities.Settings.adaptAIMech && !AM_Utilities.Settings.adaptColonyMech && !pawn.IsColonyMech) || (!AM_Utilities.Settings.adaptAIMech && AM_Utilities.Settings.adaptColonyMech && pawn.IsColonyMech))
+                {
+                    HediffGiverUtility.TryApply(pawn, hediff, (IEnumerable<BodyPartDef>)null, false, 1, (List<Hediff>)null);
+                }
             }
         }
     }

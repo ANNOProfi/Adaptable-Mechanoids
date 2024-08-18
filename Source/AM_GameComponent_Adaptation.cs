@@ -1,13 +1,16 @@
 using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace AdaptableMechanoids
 {
     public class AM_GameComponent_Adaptation : GameComponent
     {
-        public Dictionary<bool, Dictionary<string, AM_MechArmorStats>> mechFactionList = new Dictionary<bool, Dictionary<string, AM_MechArmorStats>>();
+        //public Dictionary<bool, Dictionary<string, AM_MechArmorStats>> mechFactionList = new Dictionary<bool, Dictionary<string, AM_MechArmorStats>>();
 
-        public Dictionary<bool, HashSet<string>> mechList = new Dictionary<bool, HashSet<string>>();
+        //public Dictionary<bool, HashSet<string>> mechList = new Dictionary<bool, HashSet<string>>();
+
+        public Dictionary<string, AM_MechArmorSorting> mechList = new Dictionary<string, AM_MechArmorSorting>();
 
         private int ticksToUpdate = AM_Utilities.Settings.adaptationTime;
 
@@ -17,6 +20,72 @@ namespace AdaptableMechanoids
 
         public AM_GameComponent_Adaptation(Game game)
         {
+        }
+
+        public void Register(string name, AM_MechKinds mechKind, Pawn pawn, AM_AdaptableArmor armorTypes)
+        {
+            if(mechList.ContainsKey(name))
+            {
+                if(mechList[name].CheckMech(mechKind) == null)
+                {
+                    mechList[name].MakeNewMech(pawn, armorTypes, mechKind);
+                }
+            }
+            else
+            {
+                mechList.Add(name, new AM_MechArmorSorting());
+
+                mechList[name].MakeNewMech(pawn, armorTypes, mechKind);
+            }
+        }
+
+        public float RequestAdaptation(string name, DamageArmorCategoryDef armor, AM_MechKinds mechKind)
+        {
+            if(mechList.ContainsKey(name))
+            {
+                return mechList[name].CheckMech(mechKind).armorOffsets[armor];
+            }
+            else
+            {
+                Log.Warning("AM_Warning: Adaptation requested for "+ name +" before mech could be registered.");
+                return 0f;
+            }
+        }
+
+        public void AddDamage(string name, AM_MechKinds mechKind, DamageArmorCategoryDef damage, float damageAmount)
+        {
+            if(mechList.ContainsKey(name))
+            {
+                mechList[name].AddDamage(mechKind, damage, damageAmount);
+            }
+            else
+            {
+                Log.Warning("AM_Warning: Mech "+ name +" tried to add damage before being registered");
+            }
+        }
+
+        public void ResetArmor()
+        {
+            foreach(string name in mechList.Keys)
+            {
+                mechList[name].ResetArmor(false);
+            }
+        }
+
+        public void ResetMax()
+        {
+            foreach(string name in mechList.Keys)
+            {
+                mechList[name].ResetMax();
+            }
+        }
+
+        public void CalculateArmor(bool hardmode)
+        {
+            foreach(string name in mechList.Keys)
+            {
+                mechList[name].AdaptMechs(hardmode);
+            }
         }
 
         public override void GameComponentTick()
@@ -34,35 +103,17 @@ namespace AdaptableMechanoids
                 {
                     useHeatInitialised = true;
 
-                    foreach(bool colonyMech in mechList.Keys)
-                    {
-                        foreach(string name in mechList[colonyMech])
-                        {
-                            mechFactionList[colonyMech].TryGetValue(name).ResetArmor(false);
-                        }
-                    }
+                    ResetArmor();
                 }
 
                 if(!useMaxInitialised && AM_Utilities.Settings.useMax)
                 {
                     useMaxInitialised = true;
 
-                    foreach(bool colonyMech in mechList.Keys)
-                    {
-                        foreach(string name in mechList[colonyMech])
-                        {
-                            mechFactionList[colonyMech].TryGetValue(name).ResetMax();
-                        }
-                    }
+                    ResetMax();
                 }
 
-                foreach(bool colonyMech in mechList.Keys)
-                {
-                    foreach(string name in mechList[colonyMech])
-                    {
-                        mechFactionList[colonyMech].TryGetValue(name).CalculateArmor(AM_Utilities.Settings.hardMode);
-                    }
-                }
+                CalculateArmor(AM_Utilities.Settings.hardMode);
 
                 if(useHeatInitialised && !AM_Utilities.Settings.useHeat)
                 {
@@ -73,13 +124,7 @@ namespace AdaptableMechanoids
                 {
                     useMaxInitialised = false;
 
-                    foreach(bool colonyMech in mechFactionList.Keys)
-                    {
-                        foreach(string name in mechList[colonyMech])
-                        {
-                            mechFactionList[colonyMech].TryGetValue(name).ResetMax();
-                        }
-                    }
+                    ResetMax();
                 }
 
                 ticksToUpdate = AM_Utilities.Settings.adaptationTime;
@@ -89,6 +134,7 @@ namespace AdaptableMechanoids
         public override void StartedNewGame()
         {
             base.StartedNewGame();
+
             if(AM_Utilities.Settings.useHeat)
             {
                 useHeatInitialised = true;
@@ -103,8 +149,9 @@ namespace AdaptableMechanoids
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look(ref mechList, "mechList", LookMode.Deep, LookMode.Deep);
-            Scribe_Collections.Look(ref mechFactionList, "mechFactionList", LookMode.Deep, LookMode.Deep);
+            Scribe_Collections.Look(ref mechList, "mechList", LookMode.Value, LookMode.Reference);
+            Scribe_Values.Look(ref useHeatInitialised, "useHeatInitialised", false);
+            Scribe_Values.Look(ref useMaxInitialised, "useMaxInitialised", false);
         }
     }
 }
