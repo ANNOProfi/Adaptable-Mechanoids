@@ -149,7 +149,7 @@ namespace AdaptableMechanoids
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Collections.Look(ref mechList, "mechList", LookMode.Value, LookMode.Reference);
+            Scribe_Collections.Look(ref mechList, "mechList", LookMode.Value, LookMode.Deep);
             Scribe_Values.Look(ref useHeatInitialised, "useHeatInitialised", false);
             Scribe_Values.Look(ref useMaxInitialised, "useMaxInitialised", false);
         }

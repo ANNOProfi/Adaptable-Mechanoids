@@ -9,7 +9,7 @@ namespace AdaptableMechanoids
         {
             if(!pawn.health.hediffSet.HasHediff(hediff))
             {
-                if((AM_Utilities.Settings.adaptAIMech && !AM_Utilities.Settings.adaptColonyMech && !pawn.IsColonyMech) || (!AM_Utilities.Settings.adaptAIMech && AM_Utilities.Settings.adaptColonyMech && pawn.IsColonyMech))
+                if((AM_Utilities.Settings.adaptAIMech && !pawn.IsColonyMech && !pawn.Faction.def.humanlikeFaction) || (AM_Utilities.Settings.adaptColonyMech && pawn.IsColonyMech))
                 {
                     HediffGiverUtility.TryApply(pawn, hediff, (IEnumerable<BodyPartDef>)null, false, 1, (List<Hediff>)null);
                 }

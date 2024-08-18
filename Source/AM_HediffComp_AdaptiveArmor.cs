@@ -12,8 +12,6 @@ namespace AdaptableMechanoids
 
         private bool registered = false;
 
-        private string name;
-
         public override HediffStage CurStage
         {
             get
@@ -29,7 +27,7 @@ namespace AdaptableMechanoids
                         {
                             StatModifier statModifier = new StatModifier();
                             statModifier.stat = armorTypes.armorType;
-                            statModifier.value = component.RequestAdaptation(name, armorTypes.damageType, CheckMechKind());
+                            statModifier.value = component.RequestAdaptation(pawn.def.defName, armorTypes.damageType, CheckMechKind());
 
                             curStage.statOffsets.Add(statModifier);
                         }
@@ -55,18 +53,18 @@ namespace AdaptableMechanoids
         {
             if(!registered)
             {
-                Log.Warning("Mech "+ name +" has requested adaptation before being registered.");
+                Log.Warning("Mech "+ pawn.def.defName +" has requested adaptation before being registered.");
             }
 
             if(!this.pawn.Dead && (!this.pawn.Faction.def.humanlikeFaction || pawn.Faction.IsPlayer) && totalDamageDealt > 0f)
             {
-                component.AddDamage(name, CheckMechKind(), dinfo.Def.armorCategory, totalDamageDealt);
+                component.AddDamage(pawn.def.defName, CheckMechKind(), dinfo.Def.armorCategory, totalDamageDealt);
             }
         }
 
         public void Register()
         {
-            component.Register(name, CheckMechKind(), pawn, def.GetModExtension<AM_AdaptableArmor>());
+            component.Register(pawn.def.defName, CheckMechKind(), pawn, def.GetModExtension<AM_AdaptableArmor>());
 
             registered = true;
         }
@@ -75,7 +73,6 @@ namespace AdaptableMechanoids
         {
             base.PostAdd(dinfo);
 
-            name = pawn.def.defName;
             //Registering new mech type
             if(!registered)
             {
@@ -88,7 +85,6 @@ namespace AdaptableMechanoids
             base.ExposeData();
 
             Scribe_Values.Look(ref registered, "registered", defaultValue: false);
-            Scribe_Values.Look(ref name, "name", defaultValue: pawn.def.defName);
         }
     }
 }

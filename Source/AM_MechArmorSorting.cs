@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using Verse;
+using RimWorld;
+using UnityEngine;
 
 namespace AdaptableMechanoids
 {
-    public class AM_MechArmorSorting
+    public class AM_MechArmorSorting : IExposable
     {
         private Dictionary<AM_MechKinds, AM_MechArmorStats> mechs = new Dictionary<AM_MechKinds, AM_MechArmorStats>();
 
@@ -20,7 +22,8 @@ namespace AdaptableMechanoids
             }
             else
             {
-                mechs.Add(mechKind, new AM_MechArmorStats(pawn, armorTypes));
+                mechs.Add(mechKind, new AM_MechArmorStats());
+                mechs[mechKind].Register(pawn, armorTypes);
             }
         }
 
@@ -79,7 +82,12 @@ namespace AdaptableMechanoids
 
         public void ExposeData()
         {
-            Scribe_Collections.Look(ref mechs, "mechs", LookMode.Value, LookMode.Reference);
+            Scribe_Collections.Look(ref mechs, "mechs", LookMode.Value, LookMode.Deep);
         }
+
+        /*public string GetUniqueLoadID()
+        {
+            return "AM_MechArmorSorting_"+loadID;
+        }*/
     }
 }

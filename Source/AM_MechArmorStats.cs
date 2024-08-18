@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AdaptableMechanoids
 {
-    public class AM_MechArmorStats
+    public class AM_MechArmorStats : IExposable
     {
         private float Armor_total
         {
@@ -74,7 +74,12 @@ namespace AdaptableMechanoids
 
         private bool usingHeat = false;
 
-        public AM_MechArmorStats(Pawn pawn, AM_AdaptableArmor armor)
+        public AM_MechArmorStats()
+        {
+            
+        }
+
+        public void Register(Pawn pawn, AM_AdaptableArmor armor)
         {
             foreach(AM_ArmorTypes damage in armor.armorTypes)
             {
@@ -376,14 +381,19 @@ namespace AdaptableMechanoids
 
         public void ExposeData()
         {
-            Scribe_Collections.Look(ref armorTypes, "armorTypes", LookMode.Deep);
-            Scribe_Collections.Look(ref armorValues, "armorValues", LookMode.Deep);
-            Scribe_Collections.Look(ref armorOffsets, "armorOffsets", LookMode.Deep);
-            Scribe_Collections.Look(ref damageAmounts, "damageAmounts", LookMode.Deep);
+            Scribe_Collections.Look(ref armorTypes, "armorTypes", LookMode.Def);
+            Scribe_Collections.Look(ref armorValues, "armorValues", LookMode.Def, LookMode.Value);
+            Scribe_Collections.Look(ref armorOffsets, "armorOffsets", LookMode.Def, LookMode.Value);
+            Scribe_Collections.Look(ref damageAmounts, "damageAmounts", LookMode.Def, LookMode.Value);
 
             Scribe_Values.Look(ref usingHeat, "usingHeat", false);
             Scribe_Values.Look(ref maxValue, "maxValue", StatDefOf.ArmorRating_Blunt.maxValue);
-            Scribe_Values.Look(ref adaptationStep, "adaptationStep", 0.1f);
+            Scribe_Values.Look(ref adaptationStep, "adaptationStep", 0.001f);
         }
+
+        /*public string GetUniqueLoadID()
+        {
+            return "AM_MechArmorStats_"+ loadID;
+        }*/
     }
 }
