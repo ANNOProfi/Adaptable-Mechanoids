@@ -22,28 +22,28 @@ namespace AdaptableMechanoids
         {
         }
 
-        public void Register(string name, AM_MechKinds mechKind, Pawn pawn, AM_AdaptableArmor armorTypes)
+        public void Register(string name, FactionDef mechFaction, Pawn pawn, AM_AdaptableArmor armorTypes)
         {
             if(mechList.ContainsKey(name))
             {
-                if(mechList[name].CheckMech(mechKind) == null)
+                if(mechList[name].CheckMech(mechFaction) == null)
                 {
-                    mechList[name].MakeNewMech(pawn, armorTypes, mechKind);
+                    mechList[name].MakeNewMech(pawn, armorTypes, mechFaction);
                 }
             }
             else
             {
                 mechList.Add(name, new AM_MechArmorSorting());
 
-                mechList[name].MakeNewMech(pawn, armorTypes, mechKind);
+                mechList[name].MakeNewMech(pawn, armorTypes, mechFaction);
             }
         }
 
-        public float RequestAdaptation(string name, DamageArmorCategoryDef armor, AM_MechKinds mechKind)
+        public float RequestAdaptation(string name, DamageArmorCategoryDef armor, FactionDef mechFaction)
         {
             if(mechList.ContainsKey(name))
             {
-                return mechList[name].CheckMech(mechKind).armorOffsets[armor];
+                return mechList[name].CheckMech(mechFaction).armorOffsets[armor];
             }
             else
             {
@@ -52,11 +52,11 @@ namespace AdaptableMechanoids
             }
         }
 
-        public void AddDamage(string name, AM_MechKinds mechKind, DamageArmorCategoryDef damage, float damageAmount)
+        public void AddDamage(string name, FactionDef mechFaction, DamageArmorCategoryDef damage, float damageAmount)
         {
             if(mechList.ContainsKey(name))
             {
-                mechList[name].AddDamage(mechKind, damage, damageAmount);
+                mechList[name].AddDamage(mechFaction, damage, damageAmount);
             }
             else
             {

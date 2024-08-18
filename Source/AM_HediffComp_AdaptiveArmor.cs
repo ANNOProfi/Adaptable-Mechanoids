@@ -27,25 +27,13 @@ namespace AdaptableMechanoids
                         {
                             StatModifier statModifier = new StatModifier();
                             statModifier.stat = armorTypes.armorType;
-                            statModifier.value = component.RequestAdaptation(pawn.def.defName, armorTypes.damageType, CheckMechKind());
+                            statModifier.value = component.RequestAdaptation(pawn.def.defName, armorTypes.damageType, pawn.Faction.def);
 
                             curStage.statOffsets.Add(statModifier);
                         }
                     }
                 }
                 return curStage;
-            }
-        }
-
-        public AM_MechKinds CheckMechKind()
-        {
-            if(pawn.IsColonyMech)
-            {
-                return AM_MechKinds.Friend;
-            }
-            else
-            {
-                return AM_MechKinds.Foe;
             }
         }
 
@@ -58,13 +46,13 @@ namespace AdaptableMechanoids
 
             if(!this.pawn.Dead && (!this.pawn.Faction.def.humanlikeFaction || pawn.Faction.IsPlayer) && totalDamageDealt > 0f)
             {
-                component.AddDamage(pawn.def.defName, CheckMechKind(), dinfo.Def.armorCategory, totalDamageDealt);
+                component.AddDamage(pawn.def.defName, pawn.Faction.def, dinfo.Def.armorCategory, totalDamageDealt);
             }
         }
 
         public void Register()
         {
-            component.Register(pawn.def.defName, CheckMechKind(), pawn, def.GetModExtension<AM_AdaptableArmor>());
+            component.Register(pawn.def.defName, pawn.Faction.def, pawn, def.GetModExtension<AM_AdaptableArmor>());
 
             registered = true;
         }

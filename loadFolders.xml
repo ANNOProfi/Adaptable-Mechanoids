@@ -1,0 +1,8 @@
+<loadFolders>
+    <v1.5>
+		<li>/</li>
+		<li>1.5</li>
+	
+		<li IfModActive="oskarpotocki.vfe.mechanoid">1.5/Mods/VFE-M</li>	
+	</v1.5>
+</loadFolders>

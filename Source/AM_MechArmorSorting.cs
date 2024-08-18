@@ -7,33 +7,33 @@ namespace AdaptableMechanoids
 {
     public class AM_MechArmorSorting : IExposable
     {
-        private Dictionary<AM_MechKinds, AM_MechArmorStats> mechs = new Dictionary<AM_MechKinds, AM_MechArmorStats>();
+        private Dictionary<FactionDef, AM_MechArmorStats> mechs = new Dictionary<FactionDef, AM_MechArmorStats>();
 
         public AM_MechArmorSorting()
         {
 
         }
 
-        public void MakeNewMech(Pawn pawn, AM_AdaptableArmor armorTypes, AM_MechKinds mechKind)
+        public void MakeNewMech(Pawn pawn, AM_AdaptableArmor armorTypes, FactionDef mechFaction)
         {
-            if(mechs.ContainsKey(mechKind))
+            if(mechs.ContainsKey(mechFaction))
             {
                 Log.Warning("AM_Error: Could not make new mech "+ pawn.def.defName +", already registered");
             }
             else
             {
-                mechs.Add(mechKind, new AM_MechArmorStats());
-                mechs[mechKind].Register(pawn, armorTypes);
+                mechs.Add(mechFaction, new AM_MechArmorStats());
+                mechs[mechFaction].Register(pawn, armorTypes);
             }
         }
 
-        public AM_MechArmorStats CheckMech(AM_MechKinds mechKind)
+        public AM_MechArmorStats CheckMech(FactionDef mechFaction)
         {
-            foreach(AM_MechKinds mechKinds in mechs.Keys)
+            foreach(FactionDef mechFactions in mechs.Keys)
             {
-                if(mechKinds == mechKind)
+                if(mechFactions == mechFaction)
                 {
-                    return mechs[mechKind];
+                    return mechs[mechFaction];
                 }
             }
 
@@ -42,17 +42,17 @@ namespace AdaptableMechanoids
 
         public void AdaptMechs(bool hardmode)
         {
-            foreach(AM_MechKinds mechKinds in mechs.Keys)
+            foreach(FactionDef mechFactions in mechs.Keys)
             {
-                mechs[mechKinds].CalculateArmor(hardmode);
+                mechs[mechFactions].CalculateArmor(hardmode);
             }
         }
 
-        public void AddDamage(AM_MechKinds mechKind, DamageArmorCategoryDef damage, float damageAmount)
+        public void AddDamage(FactionDef mechFaction, DamageArmorCategoryDef damage, float damageAmount)
         {
-            if(mechs.ContainsKey(mechKind))
+            if(mechs.ContainsKey(mechFaction))
             {
-                mechs[mechKind].damageAmounts[damage] += damageAmount;
+                mechs[mechFaction].damageAmounts[damage] += damageAmount;
             }
             else
             {
@@ -62,21 +62,21 @@ namespace AdaptableMechanoids
 
         public void ResetArmor(bool debug)
         {
-            foreach(AM_MechKinds mechKinds in mechs.Keys)
+            foreach(FactionDef mechFactions in mechs.Keys)
             {
                 if(debug)
                 {
-                    Log.Message("AM_Debug: Resetting armor for mechKind "+mechKinds);
+                    Log.Message("AM_Debug: Resetting armor for faction "+mechFactions.defName);
                 }
-                mechs[mechKinds].ResetArmor(debug);
+                mechs[mechFactions].ResetArmor(debug);
             }
         }
 
         public void ResetMax()
         {
-            foreach(AM_MechKinds mechKinds in mechs.Keys)
+            foreach(FactionDef mechFactions in mechs.Keys)
             {
-                mechs[mechKinds].ResetMax();
+                mechs[mechFactions].ResetMax();
             }
         }
 
