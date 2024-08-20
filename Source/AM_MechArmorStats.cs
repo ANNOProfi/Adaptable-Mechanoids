@@ -120,6 +120,42 @@ namespace AdaptableMechanoids
             adaptationStep = AM_Utilities.Settings.adaptationStep;
         }
 
+        public void CalculateNewArmor()
+        {
+            tickingArmorTypes.Clear();
+
+            foreach(DamageArmorCategoryDef armor in armorTypes)
+            {
+                tickingArmorTypes.Add(armor);
+                armorNewValues[armor] = Mathf.Clamp(Armor_total*(damageAmounts[armor]/DamageAmountsTotal), 0, maxValue);
+                if(armorNewValues[armor] <= maxValue && armorNewValues[armor] > 0f)
+                {
+                    tickingArmorTypes.Remove(armor);
+                }
+            }
+
+            CheckArmorPoints();
+        }
+
+        public void CheckArmorPoints()
+        {
+            if(NewArmor_total < Armor_total)
+            {
+                float points = Armor_total - NewArmor_total;
+                foreach(DamageArmorCategoryDef armor in armorTypes)
+                {
+                    if(armorNewValues[armor] == 0f)
+                    {
+                        armorNewValues[armor] = points/tickingArmorTypes.Count();
+                    }
+                }
+            }
+            else if(NewArmor_total > Armor_total)
+            {
+                Log.Error("AM_Error: Armor total of "+defName+" exceeds previous total after recalculation");
+            }
+        }
+
         public void ResetMax()
         {
             if(AM_Utilities.Settings.useMax)
@@ -132,6 +168,59 @@ namespace AdaptableMechanoids
             }
         }
 
+        public void SubtractArmor()
+        {
+            foreach(DamageArmorCategoryDef armor in armorTypes)
+            {
+                if(armorNewValues[armor] < armorValues[armor])
+                {
+                    if(armorOffsets[armor] - adaptationStep >= -armorValues[armor] && armorOffsets[armor] + armorValues[armor] > armorNewValues[armor])
+                    {
+                        armorOffsets[armor] -= adaptationStep;
+                        unspentPoints += adaptationStep;
+                    }
+                }
+            }
+        }
+
+        public void AddArmor()
+        {
+            while(unspentPoints-adaptationStep >= 0f)
+            {
+                foreach(DamageArmorCategoryDef armor in armorTypes)
+                {
+                    if(armorNewValues[armor] > armorValues[armor] && (armorOffsets[armor] + armorValues[armor]) < maxValue)
+                    {
+                        armorOffsets[armor] += adaptationStep;
+                        unspentPoints -= adaptationStep;
+                    }
+                }
+            }
+        }
+
+        public void AddArmorHardmode()
+        {
+            foreach(DamageArmorCategoryDef armor in armorTypes)
+            {
+                armorNewValues[armor] = armorValues[armor] + (damageAmounts[armor] * adaptationStep);
+
+                if(armorNewValues[armor] > armorValues[armor] && armorOffsets[armor] + armorValues[armor] < maxValue)
+                {
+                    //Slower in hard mode
+                    armorOffsets[armor] += adaptationStep * 0.1f;
+                }
+            }
+        }
+
+        public void RemoveHeat()
+        {
+            damageAmounts.Remove(AM_DefOf.Heat);
+            unspentPoints += armorOffsets[AM_DefOf.Heat];
+            armorOffsets[AM_DefOf.Heat] = 0f;
+            armorTypes.Remove(AM_DefOf.Heat);
+            
+        }
+
         public void ResetArmor(bool debug)
         {
             if(debug)
@@ -141,14 +230,7 @@ namespace AdaptableMechanoids
             bool useHeat = AM_Utilities.Settings.useHeat;
             bool hardMode = AM_Utilities.Settings.hardMode;
 
-            if(AM_Utilities.Settings.useMax)
-            {
-                maxValue = AM_Utilities.Settings.maxValue;
-            }
-            else
-            {
-                maxValue = StatDefOf.ArmorRating_Blunt.maxValue;
-            }
+            ResetMax();
 
             //Adding heat armor if enabled mid-game
             if(debug)
@@ -289,93 +371,19 @@ namespace AdaptableMechanoids
                 //If heat armor was disabled without reset
                 if(usingHeat && !AM_Utilities.Settings.useHeat)
                 {
-                    damageAmounts.Remove(AM_DefOf.Heat);
-                    unspentPoints += armorOffsets[AM_DefOf.Heat];
-                    armorOffsets[AM_DefOf.Heat] = 0f;
-                    armorTypes.Remove(AM_DefOf.Heat);
-                }
-                //Calculating and subtracting armor points
-
-                tickingArmorTypes.Clear();
-
-                foreach(DamageArmorCategoryDef armor in armorTypes)
-                {
-                    tickingArmorTypes.Add(armor);
-                    armorNewValues[armor] = Mathf.Clamp(Armor_total*(damageAmounts[armor]/DamageAmountsTotal), 0, maxValue);
-                    if(armorNewValues[armor] <= maxValue && armorNewValues[armor] > 0f)
-                    {
-                        tickingArmorTypes.Remove(armor);
-                    }
+                    RemoveHeat();
                 }
                 
-                if(NewArmor_total < Armor_total)
-                {
-                    float points = Armor_total - NewArmor_total;
-                    foreach(DamageArmorCategoryDef armor in armorTypes)
-                    {
-                        if(armorNewValues[armor] == 0f)
-                        {
-                            armorNewValues[armor] = points/tickingArmorTypes.Count();
-                        }
-                    }
-                }
-                else if(NewArmor_total > Armor_total)
-                {
-                    Log.Error("AM_Error: Armor total of "+defName+" exceeds previous total after recalculation");
-                }
-
-                foreach(DamageArmorCategoryDef armor in armorTypes)
-                {
-                    if(armorNewValues[armor] < armorValues[armor])
-                    {
-                        if(armorOffsets[armor] - adaptationStep >= -armorValues[armor] && armorOffsets[armor] + armorValues[armor] > armorNewValues[armor])
-                        {
-                            armorOffsets[armor] -= adaptationStep;
-                            unspentPoints += adaptationStep;
-                        }
-                    }
-                }
-
-                List<bool> failsafe = new List<bool>();
+                //Subtracting armor points
+                SubtractArmor();
 
                 //Adding armor points
-                while(unspentPoints >= adaptationStep)
-                {
-                    foreach(DamageArmorCategoryDef armor in armorTypes)
-                    {
-                        failsafe.Add(false);
-                        if(armorNewValues[armor] > armorValues[armor] && (armorOffsets[armor] + armorValues[armor]) < maxValue)
-                        {
-                            armorOffsets[armor] += adaptationStep;
-                            unspentPoints -= adaptationStep;
-                        }
-                        else
-                        {
-                            failsafe.RemoveLast();
-                        }
-                    }
-
-                    if(failsafe.Empty())
-                    {
-                        break;
-                    }
-
-                    failsafe.Clear();
-                }
+                AddArmor();
             }
             //Calculating for hard mode, slight balance adjustment
             else
             {
-                foreach(DamageArmorCategoryDef armor in armorTypes)
-                {
-                    armorNewValues[armor] = armorValues[armor] + (damageAmounts[armor] * adaptationStep);
-
-                    if(armorNewValues[armor] > armorValues[armor] && armorOffsets[armor] + armorValues[armor] < maxValue)
-                    {
-                        //Slower in hard mode
-                        armorOffsets[armor] += adaptationStep * 0.1f;
-                    }
-                }
+                AddArmorHardmode();
             }
         }
 
