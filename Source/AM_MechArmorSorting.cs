@@ -82,7 +82,7 @@ namespace AdaptableMechanoids
 
         public void ExposeData()
         {
-            Scribe_Collections.Look(ref mechs, "mechs", LookMode.Value, LookMode.Deep);
+            Scribe_Collections.Look(ref mechs, "mechs", LookMode.Def, LookMode.Deep);
         }
 
         /*public string GetUniqueLoadID()
