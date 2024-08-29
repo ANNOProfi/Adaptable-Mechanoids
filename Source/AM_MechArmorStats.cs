@@ -185,7 +185,7 @@ namespace AdaptableMechanoids
 
         public void AddArmor()
         {
-            while(unspentPoints-adaptationStep >= 0f)
+            while(unspentPoints >= adaptationStep)
             {
                 foreach(DamageArmorCategoryDef armor in armorTypes)
                 {
@@ -365,25 +365,28 @@ namespace AdaptableMechanoids
 
         public void CalculateArmor(bool hardMode)
         {
-            //Calculating armor for regular mode
-            if(!hardMode)
+            if(DamageAmountsTotal > 0f)
             {
-                //If heat armor was disabled without reset
-                if(usingHeat && !AM_Utilities.Settings.useHeat)
+                //Calculating armor for regular mode
+                if(!hardMode)
                 {
-                    RemoveHeat();
-                }
-                
-                //Subtracting armor points
-                SubtractArmor();
+                    //If heat armor was disabled without reset
+                    if(usingHeat && !AM_Utilities.Settings.useHeat)
+                    {
+                        RemoveHeat();
+                    }
+                    
+                    //Subtracting armor points
+                    SubtractArmor();
 
-                //Adding armor points
-                AddArmor();
-            }
-            //Calculating for hard mode, slight balance adjustment
-            else
-            {
-                AddArmorHardmode();
+                    //Adding armor points
+                    AddArmor();
+                }
+                //Calculating for hard mode, slight balance adjustment
+                else
+                {
+                    AddArmorHardmode();
+                }
             }
         }
 

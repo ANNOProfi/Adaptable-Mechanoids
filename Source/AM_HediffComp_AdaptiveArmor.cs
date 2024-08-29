@@ -52,6 +52,7 @@ namespace AdaptableMechanoids
 
         public void Register()
         {
+            //Log.Message("AM_Message: Registering "+pawn.def.defName+" of faction "+pawn.Faction.def);
             component.Register(pawn.def.defName, pawn.Faction.def, pawn, def.GetModExtension<AM_AdaptableArmor>());
 
             registered = true;
