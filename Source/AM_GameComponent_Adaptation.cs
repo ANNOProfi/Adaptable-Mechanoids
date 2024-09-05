@@ -64,11 +64,11 @@ namespace AdaptableMechanoids
             }
         }
 
-        public void ResetArmor()
+        public void ResetArmor(bool debug)
         {
             foreach(string name in mechList.Keys)
             {
-                mechList[name].ResetArmor(false);
+                mechList[name].ResetArmor(debug);
             }
         }
 
@@ -103,7 +103,7 @@ namespace AdaptableMechanoids
                 {
                     useHeatInitialised = true;
 
-                    ResetArmor();
+                    ResetArmor(false);
                 }
 
                 if(!useMaxInitialised && AM_Utilities.Settings.useMax)

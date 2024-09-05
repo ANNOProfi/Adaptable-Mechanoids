@@ -116,8 +116,6 @@ namespace AdaptableMechanoids
             {
                 maxValue = StatDefOf.ArmorRating_Blunt.maxValue;
             }
-            
-            adaptationStep = AM_Utilities.Settings.adaptationStep;
         }
 
         public void CalculateNewArmor()
@@ -135,6 +133,30 @@ namespace AdaptableMechanoids
             }
 
             CheckArmorPoints();
+        }
+
+        public void CheckArmorTypes()
+        {
+            foreach(DamageArmorCategoryDef armor in armorTypes)
+            {
+                if(armor == null)
+                {
+                    armorTypes.Remove(armor);
+                    continue;
+                }
+                if(!armorOffsets.ContainsKey(armor))
+                {
+                    armorOffsets.TryAdd(armor, 0f);
+                }
+                if(!damageAmounts.ContainsKey(armor))
+                {
+                    damageAmounts.TryAdd(armor, 0f);
+                }
+                if(!armorNewValues.ContainsKey(armor))
+                {
+                    armorNewValues.TryAdd(armor, 0f);
+                }
+            }
         }
 
         public void CheckArmorPoints()
@@ -367,6 +389,8 @@ namespace AdaptableMechanoids
         {
             if(DamageAmountsTotal > 0f)
             {
+                adaptationStep = AM_Utilities.Settings.adaptationStep;
+
                 //Calculating armor for regular mode
                 if(!hardMode)
                 {
@@ -401,10 +425,5 @@ namespace AdaptableMechanoids
             Scribe_Values.Look(ref maxValue, "maxValue", StatDefOf.ArmorRating_Blunt.maxValue);
             Scribe_Values.Look(ref adaptationStep, "adaptationStep", 0.001f);
         }
-
-        /*public string GetUniqueLoadID()
-        {
-            return "AM_MechArmorStats_"+ loadID;
-        }*/
     }
 }

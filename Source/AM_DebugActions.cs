@@ -10,11 +10,7 @@ namespace AdaptableMechanoids
         {
             AM_GameComponent_Adaptation component = Current.Game.GetComponent<AM_GameComponent_Adaptation>();
 
-            foreach(string name in component.mechList.Keys)
-            {
-                Log.Message("AM_Debug: Resetting armor for "+name);
-                component.mechList[name].ResetArmor(true);
-            }
+            component.ResetArmor(true);
         }
     }
 }

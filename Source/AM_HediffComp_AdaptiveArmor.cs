@@ -41,7 +41,7 @@ namespace AdaptableMechanoids
         {
             if(!registered)
             {
-                Log.Warning("Mech "+ pawn.def.defName +" has requested adaptation before being registered.");
+                Log.Warning("AM_Warning: Mech "+ pawn.def.defName +" has requested adaptation before being registered.");
             }
 
             if(!this.pawn.Dead && (!this.pawn.Faction.def.humanlikeFaction || pawn.Faction.IsPlayer) && totalDamageDealt > 0f)

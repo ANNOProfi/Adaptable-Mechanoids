@@ -53,7 +53,11 @@ namespace AdaptableMechanoids
             if(mechs.ContainsKey(mechFaction))
             {
                 mechs[mechFaction].damageAmounts[damage] += damageAmount;
-                mechs[mechFaction].CalculateNewArmor();
+                if(damageAmount > 0f)
+                {
+                    mechs[mechFaction].CalculateNewArmor();
+                }
+                
             }
             else
             {

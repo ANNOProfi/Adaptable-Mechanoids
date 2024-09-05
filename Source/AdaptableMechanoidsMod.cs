@@ -57,7 +57,7 @@ namespace AdaptableMechanoids
 
         public override string SettingsCategory()
         {
-            return "AdaptableMechanoids";
+            return "Adaptable Mechanoids";
         }
     }
 }
