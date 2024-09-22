@@ -142,19 +142,6 @@ namespace AdaptableMechanoids
                 if(armor == null)
                 {
                     armorTypes.Remove(armor);
-                    continue;
-                }
-                if(!armorOffsets.ContainsKey(armor))
-                {
-                    armorOffsets.TryAdd(armor, 0f);
-                }
-                if(!damageAmounts.ContainsKey(armor))
-                {
-                    damageAmounts.TryAdd(armor, 0f);
-                }
-                if(!armorNewValues.ContainsKey(armor))
-                {
-                    armorNewValues.TryAdd(armor, 0f);
                 }
             }
         }
@@ -228,8 +215,7 @@ namespace AdaptableMechanoids
 
                 if(armorNewValues[armor] > armorValues[armor] && armorOffsets[armor] + armorValues[armor] < maxValue)
                 {
-                    //Slower in hard mode
-                    armorOffsets[armor] += adaptationStep * 0.1f;
+                    armorOffsets[armor] += adaptationStep;
                 }
             }
         }
@@ -418,6 +404,7 @@ namespace AdaptableMechanoids
         {
             Scribe_Collections.Look(ref armorTypes, "armorTypes", LookMode.Def);
             Scribe_Collections.Look(ref armorValues, "armorValues", LookMode.Def, LookMode.Value);
+            Scribe_Collections.Look(ref armorNewValues, "armorNewValues", LookMode.Def, LookMode.Value);
             Scribe_Collections.Look(ref armorOffsets, "armorOffsets", LookMode.Def, LookMode.Value);
             Scribe_Collections.Look(ref damageAmounts, "damageAmounts", LookMode.Def, LookMode.Value);
 

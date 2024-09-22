@@ -146,6 +146,31 @@ namespace AdaptableMechanoids
             }
         }
 
+        public void CheckArmorTypes()
+        {
+            foreach(string name in mechList.Keys)
+            {
+                mechList[name].CheckArmorTypes();
+            }
+        }
+
+        public void CheckFactions()
+        {
+            foreach(string name in mechList.Keys)
+            {
+                mechList[name].CheckFactions();
+            }
+        }
+
+        public override void LoadedGame()
+        {
+            base.LoadedGame();
+
+            CheckFactions();
+
+            CheckArmorTypes();
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();

@@ -77,6 +77,25 @@ namespace AdaptableMechanoids
             }
         }
 
+        public void CheckFactions()
+        {
+            foreach(FactionDef mechFactions in mechs.Keys)
+            {
+                if(mechFactions == null)
+                {
+                    mechs.Remove(mechFactions);
+                }
+            }
+        }
+
+        public void CheckArmorTypes()
+        {
+            foreach(FactionDef mechFactions in mechs.Keys)
+            {
+                mechs[mechFactions].CheckArmorTypes();
+            }
+        }
+
         public void ResetMax()
         {
             foreach(FactionDef mechFactions in mechs.Keys)
