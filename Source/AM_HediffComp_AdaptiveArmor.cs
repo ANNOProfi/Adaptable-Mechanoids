@@ -12,6 +12,8 @@ namespace AdaptableMechanoids
 
         private bool registered = false;
 
+        private Dictionary<StatDef, float> statModifiers;
+
         public override HediffStage CurStage
         {
             get
@@ -23,13 +25,24 @@ namespace AdaptableMechanoids
                         curStage = new HediffStage();
                         curStage.statOffsets = new List<StatModifier>();
 
+                        if(statModifiers == null)
+                        {
+                            statModifiers = new Dictionary<StatDef, float>();
+                        }
+
                         foreach(AM_ArmorTypes armorTypes in this.def.GetModExtension<AM_AdaptableArmor>().armorTypes)
                         {
-                            StatModifier statModifier = new StatModifier();
-                            statModifier.stat = armorTypes.armorType;
-                            statModifier.value = component.RequestAdaptation(pawn.def.defName, armorTypes.damageType, pawn.Faction.def);
+                            StatModifier modifier = new StatModifier();
+                            modifier.stat = armorTypes.armorType;
+                            
+                            if(statModifiers.ContainsKey(armorTypes.armorType) == false)
+                            {
+                                statModifiers.Add(armorTypes.armorType, component.RequestAdaptation(pawn.def.defName, armorTypes.damageType, pawn.Faction.def));
+                            }
 
-                            curStage.statOffsets.Add(statModifier);
+                            modifier.value = statModifiers[armorTypes.armorType];
+
+                            curStage.statOffsets.Add(modifier);
                         }
                     }
                 }
@@ -74,6 +87,7 @@ namespace AdaptableMechanoids
             base.ExposeData();
 
             Scribe_Values.Look(ref registered, "registered", defaultValue: false);
+            Scribe_Collections.Look(ref statModifiers, "statModifiers", LookMode.Def, LookMode.Value);
         }
     }
 }
