@@ -137,13 +137,27 @@ namespace AdaptableMechanoids
 
         public void CheckArmorTypes()
         {
+            armorTypes.RemoveWhere(item => item == null);
+
+            armorValues = ClearArmor(armorValues);
+
+            armorOffsets = ClearArmor(armorOffsets);
+
+            armorNewValues = ClearArmor(armorNewValues);
+
+            damageAmounts = ClearArmor(damageAmounts);
+        }
+
+        public Dictionary<DamageArmorCategoryDef, float> ClearArmor(Dictionary<DamageArmorCategoryDef, float> dictionary)
+        {
+            Dictionary<DamageArmorCategoryDef, float> temp = new Dictionary<DamageArmorCategoryDef, float>();
+
             foreach(DamageArmorCategoryDef armor in armorTypes)
             {
-                if(armor == null)
-                {
-                    armorTypes.Remove(armor);
-                }
+                temp.Add(armor, dictionary[armor]);
             }
+
+            return temp;
         }
 
         public void CheckArmorPoints()
